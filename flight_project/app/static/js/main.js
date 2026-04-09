@@ -114,23 +114,4 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Price chart error:', error);
         }
     }
-    
-    loadAirlines();
-    
-    async function loadAirlines() {
-        try {
-            const response = await fetch('/airlines');
-            const airlines = await response.json();
-            
-            const grid = document.getElementById('airlinesGrid');
-            grid.innerHTML = airlines.map(a => `
-                <div class="airline-card">
-                    <div class="airline-code">${a.code}</div>
-                    <div class="airline-name">${a.name_cn || a.name}</div>
-                </div>
-            `).join('');
-        } catch (error) {
-            console.error('Load airlines error:', error);
-        }
-    }
 });

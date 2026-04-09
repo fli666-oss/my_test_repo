@@ -45,7 +45,7 @@ def search_flights():
     if return_date:
         return_date_obj = datetime.strptime(return_date, '%Y-%m-%d').date()
     else:
-        return_date_obj = (departure_date_obj + timedelta(days=7))
+        return_date_obj = (departure_date_obj + timedelta(days=14))
         return_date = return_date_obj.isoformat()
     
     search = SearchHistory(
