@@ -2,7 +2,6 @@
 from flask import Blueprint, render_template, request, jsonify
 from datetime import datetime, date, timedelta
 import random
-from app.models.models import db, Airline, Flight, FlightPrice, SearchHistory
 
 main_bp = Blueprint('main', __name__)
 
@@ -11,7 +10,6 @@ AIRLINES_DATA = [
     {'code': 'MU', 'name': 'China Eastern', 'name_cn': '中国东方航空'},
     {'code': 'CZ', 'name': 'China Southern', 'name_cn': '中国南方航空'},
     {'code': 'AF', 'name': 'Air France', 'name_cn': '法国航空'},
-    {'code': 'CA', 'name': 'Air China', 'name_cn': '中国国际航空'},
     {'code': 'HU', 'name': 'Hainan Airlines', 'name_cn': '海南航空'},
     {'code': 'BA', 'name': 'British Airways', 'name_cn': '英国航空'},
     {'code': 'LH', 'name': 'Lufthansa', 'name_cn': '汉莎航空'},
@@ -25,6 +23,7 @@ def index():
 
 @main_bp.route('/search', methods=['POST'])
 def search_flights():
+    from app.models.models import db, SearchHistory
     data = request.get_json()
     
     origin = data.get('origin', 'PEK')
@@ -76,6 +75,7 @@ def price_history():
 
 @main_bp.route('/airlines')
 def get_airlines():
+    from app.models.models import db, Airline
     airlines = Airline.query.all()
     return jsonify([{'code': a.code, 'name': a.name, 'name_cn': a.name_cn} for a in airlines])
 
@@ -152,6 +152,7 @@ def generate_price_history(origin, destination, target_date):
 
 def init_db():
     from flask import current_app
+    from app.models.models import db, Airline
     with current_app.app_context():
         db.create_all()
         
