@@ -6,18 +6,6 @@ import random
 
 main_bp = Blueprint('main', __name__)
 
-AIRLINES_DATA = [
-    {'code': 'CA', 'name': 'Air China', 'name_cn': '中国国际航空'},
-    {'code': 'MU', 'name': 'China Eastern', 'name_cn': '中国东方航空'},
-    {'code': 'CZ', 'name': 'China Southern', 'name_cn': '中国南方航空'},
-    {'code': 'AF', 'name': 'Air France', 'name_cn': '法国航空'},
-    {'code': 'HU', 'name': 'Hainan Airlines', 'name_cn': '海南航空'},
-    {'code': 'BA', 'name': 'British Airways', 'name_cn': '英国航空'},
-    {'code': 'LH', 'name': 'Lufthansa', 'name_cn': '汉莎航空'},
-    {'code': 'KL', 'name': 'KLM', 'name_cn': '荷兰皇家航空'},
-    {'code': 'EK', 'name': 'Emirates', 'name_cn': '阿联酋航空'},
-]
-
 USE_SERPAPI = os.environ.get('USE_SERPAPI', 'false').lower() == 'true'
 SERPAPI_API_KEY = os.environ.get('SERPAPI_API_KEY', '')
 
@@ -222,7 +210,7 @@ def search_flights_mock(origin, destination, departure_date, cabin_class):
         {'type': 'two_stop', 'stops': 2},
     ]
     
-    for i, airline in enumerate(AIRLINES_DATA):
+    for i in range(15):
         for ft in flight_types:
             if random.random() > 0.6:
                 continue
@@ -243,9 +231,9 @@ def search_flights_mock(origin, destination, departure_date, cabin_class):
             
             flights.append({
                 'id': i * 10 + ft['stops'],
-                'flight_number': f"{airline['code']}{random.randint(100, 999)}",
-                'airline': airline['name'],
-                'airline_zh': airline['name_cn'],
+                'flight_number': f"FL{random.randint(100, 999)}",
+                'airline': 'Various Airlines',
+                'airline_zh': '多家航空公司',
                 'origin': origin,
                 'destination': destination,
                 'departure_time': dep_time,
@@ -281,14 +269,7 @@ def generate_price_history(origin, destination, target_date):
 
 def init_db():
     from flask import current_app
-    from app.models.models import db, Airline
+    from app.models.models import db
     with current_app.app_context():
         db.create_all()
-        
-        for airline_data in AIRLINES_DATA:
-            existing = Airline.query.filter_by(code=airline_data['code']).first()
-            if not existing:
-                airline = Airline(**airline_data)
-                db.session.add(airline)
-        
         db.session.commit()
