@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="flight-price">
                             <div class="price-amount">
-                                <span class="currency">¥</span>${flight.price}
+                                <span class="currency">€</span>${flight.price}
                             </div>
                             <div class="seats-info">剩余 ${flight.seats_available} 座</div>
                         </div>

@@ -45,7 +45,8 @@ def search_flights():
     if return_date:
         return_date_obj = datetime.strptime(return_date, '%Y-%m-%d').date()
     else:
-        return_date_obj = None
+        return_date_obj = (departure_date_obj + timedelta(days=7))
+        return_date = return_date_obj.isoformat()
     
     search = SearchHistory(
         origin=origin,
@@ -69,7 +70,7 @@ def search_flights():
             departure_date=departure_date_obj,
             cabin_class=cabin_class,
             price=flight.get('price', 0),
-            currency='CNY',
+            currency='EUR',
             available_seats=flight.get('seats_available')
         )
         db.session.add(price_record)
@@ -149,13 +150,12 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             "departure_id": origin,
             "arrival_id": destination,
             "outbound_date": outbound_date,
-            "currency": "CNY",
+            "return_date": return_date,
+            "currency": "EUR",
             "travel_class": travel_class_map.get(cabin_class, 'ECONOMY'),
-            "adults": passengers
+            "adults": passengers,
+            "trip_type": "ROUND_TRIP"
         }
-        
-        if return_date:
-            params["return_date"] = return_date
         
         search = GoogleSearch(params)
         results = search.get_dict()
@@ -211,9 +211,9 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
 def search_flights_mock(origin, destination, departure_date, cabin_class):
     flights = []
     base_prices = {
-        'economy': {'direct': (3500, 6500), 'one_stop': (2500, 4500), 'two_stop': (1800, 3500)},
-        'business': {'direct': (12000, 20000), 'one_stop': (9000, 15000), 'two_stop': (7000, 12000)},
-        'first': {'direct': (25000, 40000), 'one_stop': (20000, 35000), 'two_stop': (15000, 28000)},
+        'economy': {'direct': (400, 800), 'one_stop': (300, 600), 'two_stop': (250, 450)},
+        'business': {'direct': (1500, 2500), 'one_stop': (1200, 2000), 'two_stop': (900, 1500)},
+        'first': {'direct': (3000, 5000), 'one_stop': (2500, 4000), 'two_stop': (2000, 3500)},
     }
     
     flight_types = [
@@ -264,7 +264,7 @@ def search_flights_mock(origin, destination, departure_date, cabin_class):
 
 def generate_price_history(origin, destination, target_date):
     history = []
-    base_price = 4500
+    base_price = 500
     
     for i in range(60):
         day = target_date - timedelta(days=30 - i)
