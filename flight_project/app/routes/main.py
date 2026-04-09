@@ -151,7 +151,8 @@ def generate_price_history(origin, destination, target_date):
     return history
 
 def init_db():
-    with main_bp.app.app_context():
+    from flask import current_app
+    with current_app.app_context():
         db.create_all()
         
         for airline_data in AIRLINES_DATA:
