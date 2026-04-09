@@ -96,9 +96,15 @@ def get_airlines():
     airlines = Airline.query.all()
     return jsonify([{'code': a.code, 'name': a.name, 'name_cn': a.name_cn} for a in airlines])
 
-def search_flights_serpapi(origin, destination, outbound_date, return_date, cabin_class):
+def search_flights_serpapi(origin, destination, outbound_date, return_date, cabin_class, passengers=1):
     try:
         from serpapi import GoogleSearch
+        
+        travel_class_map = {
+            'economy': 'ECONOMY',
+            'business': 'BUSINESS',
+            'first': 'FIRST'
+        }
         
         params = {
             "api_key": SERPAPI_API_KEY,
@@ -106,7 +112,9 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             "departure_id": origin,
             "arrival_id": destination,
             "outbound_date": outbound_date,
-            "currency": "CNY"
+            "currency": "CNY",
+            "travel_class": travel_class_map.get(cabin_class, 'ECONOMY'),
+            "adults": passengers
         }
         
         if return_date:
