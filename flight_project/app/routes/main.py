@@ -27,7 +27,7 @@ def index():
 
 @main_bp.route('/search', methods=['POST'])
 def search_flights():
-    from app.models.models import db, SearchHistory
+    from app.models.models import db, SearchHistory, FlightPrice
     data = request.get_json()
     
     origin = data.get('origin', 'PEK')
@@ -63,6 +63,18 @@ def search_flights():
     else:
         flights = search_flights_mock(origin, destination, departure_date_obj, cabin_class)
     
+    for flight in flights:
+        price_record = FlightPrice(
+            flight_id=flight.get('id'),
+            departure_date=departure_date_obj,
+            cabin_class=cabin_class,
+            price=flight.get('price', 0),
+            currency='CNY',
+            available_seats=flight.get('seats_available')
+        )
+        db.session.add(price_record)
+    db.session.commit()
+    
     return jsonify({
         'flights': flights,
         'search_info': {
@@ -78,14 +90,39 @@ def search_flights():
 
 @main_bp.route('/price-history')
 def price_history():
+    from app.models.models import db, FlightPrice
     origin = request.args.get('origin', 'PEK')
     destination = request.args.get('destination', 'CDG')
     departure_date = request.args.get('departure_date')
+    cabin_class = request.args.get('cabin_class', 'economy')
     
     if departure_date:
         departure_date = datetime.strptime(departure_date, '%Y-%m-%d').date()
     else:
         departure_date = date.today() + timedelta(days=30)
+    
+    price_records = FlightPrice.query.filter(
+        FlightPrice.departure_date == departure_date,
+        FlightPrice.cabin_class == cabin_class
+    ).order_by(FlightPrice.search_date.desc()).limit(60).all()
+    
+    if price_records:
+        from collections import defaultdict
+        by_date = defaultdict(list)
+        for record in price_records:
+            by_date[record.departure_date].append(record.price)
+        
+        history = []
+        for d, prices in sorted(by_date.items()):
+            avg_price = sum(prices) / len(prices)
+            history.append({
+                'date': d.isoformat(),
+                'price': int(avg_price),
+                'min_price': min(prices),
+                'max_price': max(prices),
+                'sample_count': len(prices)
+            })
+        return jsonify(history)
     
     price_history = generate_price_history(origin, destination, departure_date)
     return jsonify(price_history)
