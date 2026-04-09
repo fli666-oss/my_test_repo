@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北京-巴黎航班查询</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✈️ 北京-巴黎航班查询</h1>
+            <p class="subtitle">Flight Search from Beijing to Paris</p>
+        </header>
+
+        <section class="search-form">
+            <form id="flightSearchForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>出发城市</label>
+                        <select name="origin" id="origin">
+                            <option value="PEK" selected>北京 (PEK)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>目的城市</label>
+                        <select name="destination" id="destination">
+                            <option value="CDG" selected>巴黎 (CDG)</option>
+                            <option value="ORY">巴黎奥利 (ORY)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>出发日期</label>
+                        <input type="date" name="departure_date" id="departure_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>返回日期</label>
+                        <input type="date" name="return_date" id="return_date">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>人数</label>
+                        <select name="passengers" id="passengers">
+                            <option value="1" selected>1人</option>
+                            <option value="2">2人</option>
+                            <option value="3">3人</option>
+                            <option value="4">4人</option>
+                            <option value="5">5人</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>舱位等级</label>
+                        <select name="cabin_class" id="cabin_class">
+                            <option value="economy" selected>经济舱</option>
+                            <option value="business">商务舱</option>
+                            <option value="first">头等舱</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-search">🔍 搜索航班</button>
+            </form>
+        </section>
+
+        <section class="results" id="results" style="display: none;">
+            <h2>搜索结果</h2>
+            <div id="resultsList"></div>
+        </section>
+
+        <section class="price-chart" id="priceChart" style="display: none;">
+            <h2>📈 价格趋势</h2>
+            <div class="chart-container">
+                <canvas id="priceChartCanvas"></canvas>
+            </div>
+        </section>
+
+        <section class="airlines-info">
+            <h2>航空公司</h2>
+            <div class="airlines-grid" id="airlinesGrid"></div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

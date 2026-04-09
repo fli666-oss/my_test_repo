@@ -1,0 +1,163 @@
+# -*- coding: utf-8 -*-
+from flask import Blueprint, render_template, request, jsonify
+from datetime import datetime, date, timedelta
+import random
+from app.models.models import db, Airline, Flight, FlightPrice, SearchHistory
+
+main_bp = Blueprint('main', __name__)
+
+AIRLINES_DATA = [
+    {'code': 'CA', 'name': 'Air China', 'name_cn': '中国国际航空'},
+    {'code': 'MU', 'name': 'China Eastern', 'name_cn': '中国东方航空'},
+    {'code': 'CZ', 'name': 'China Southern', 'name_cn': '中国南方航空'},
+    {'code': 'AF', 'name': 'Air France', 'name_cn': '法国航空'},
+    {'code': 'CA', 'name': 'Air China', 'name_cn': '中国国际航空'},
+    {'code': 'HU', 'name': 'Hainan Airlines', 'name_cn': '海南航空'},
+    {'code': 'BA', 'name': 'British Airways', 'name_cn': '英国航空'},
+    {'code': 'LH', 'name': 'Lufthansa', 'name_cn': '汉莎航空'},
+    {'code': 'KL', 'name': 'KLM', 'name_cn': '荷兰皇家航空'},
+    {'code': 'EK', 'name': 'Emirates', 'name_cn': '阿联酋航空'},
+]
+
+@main_bp.route('/')
+def index():
+    return render_template('index.html')
+
+@main_bp.route('/search', methods=['POST'])
+def search_flights():
+    data = request.get_json()
+    
+    origin = data.get('origin', 'PEK')
+    destination = data.get('destination', 'CDG')
+    departure_date = datetime.strptime(data.get('departure_date'), '%Y-%m-%d').date()
+    return_date = data.get('return_date')
+    if return_date:
+        return_date = datetime.strptime(return_date, '%Y-%m-%d').date()
+    passengers = int(data.get('passengers', 1))
+    cabin_class = data.get('cabin_class', 'economy')
+    
+    search = SearchHistory(
+        origin=origin,
+        destination=destination,
+        departure_date=departure_date,
+        return_date=return_date,
+        passengers=passengers,
+        cabin_class=cabin_class
+    )
+    db.session.add(search)
+    db.session.commit()
+    
+    flights = search_flights_mock(origin, destination, departure_date, cabin_class)
+    return jsonify({
+        'flights': flights,
+        'search_info': {
+            'origin': origin,
+            'destination': destination,
+            'departure_date': departure_date.isoformat(),
+            'return_date': return_date.isoformat() if return_date else None,
+            'passengers': passengers,
+            'cabin_class': cabin_class
+        }
+    })
+
+@main_bp.route('/price-history')
+def price_history():
+    origin = request.args.get('origin', 'PEK')
+    destination = request.args.get('destination', 'CDG')
+    departure_date = request.args.get('departure_date')
+    
+    if departure_date:
+        departure_date = datetime.strptime(departure_date, '%Y-%m-%d').date()
+    else:
+        departure_date = date.today() + timedelta(days=30)
+    
+    price_history = generate_price_history(origin, destination, departure_date)
+    return jsonify(price_history)
+
+@main_bp.route('/airlines')
+def get_airlines():
+    airlines = Airline.query.all()
+    return jsonify([{'code': a.code, 'name': a.name, 'name_cn': a.name_cn} for a in airlines])
+
+def search_flights_mock(origin, destination, departure_date, cabin_class):
+    flights = []
+    base_prices = {
+        'economy': {'direct': (3500, 6500), 'one_stop': (2500, 4500), 'two_stop': (1800, 3500)},
+        'business': {'direct': (12000, 20000), 'one_stop': (9000, 15000), 'two_stop': (7000, 12000)},
+        'first': {'direct': (25000, 40000), 'one_stop': (20000, 35000), 'two_stop': (15000, 28000)},
+    }
+    
+    flight_types = [
+        {'type': 'direct', 'stops': 0},
+        {'type': 'one_stop', 'stops': 1},
+        {'type': 'two_stop', 'stops': 2},
+    ]
+    
+    for i, airline in enumerate(AIRLINES_DATA):
+        for ft in flight_types:
+            if random.random() > 0.6:
+                continue
+                
+            dep_hour = random.randint(6, 22)
+            dep_min = random.choice([0, 15, 30, 45])
+            duration = random.randint(8, 18) + (ft['stops'] * 3)
+            
+            arr_hour = (dep_hour + duration) % 24
+            dep_time = f"{dep_hour:02d}:{dep_min:02d}"
+            arr_time = f"{arr_hour:02d}:{(dep_min + random.randint(0, 59)) % 60:02d}"
+            
+            price_range = base_prices[cabin_class][ft['type']]
+            price = random.randint(int(price_range[0]), int(price_range[1]))
+            
+            airports = ['PVG', 'CDG', 'FRA', 'LHR', 'AMS', 'DXB']
+            stops_airports = random.sample(airports, ft['stops']) if ft['stops'] > 0 else []
+            
+            flights.append({
+                'id': i * 10 + ft['stops'],
+                'flight_number': f"{airline['code']}{random.randint(100, 999)}",
+                'airline': airline['name'],
+                'airline_zh': airline['name_cn'],
+                'origin': origin,
+                'destination': destination,
+                'departure_time': dep_time,
+                'arrival_time': arr_time,
+                'duration': duration,
+                'stops': ft['stops'],
+                'stops_airports': stops_airports,
+                'price': price,
+                'cabin_class': cabin_class,
+                'aircraft': random.choice(['Boeing 777', 'Airbus A350', 'Boeing 787', 'Airbus A380']),
+                'seats_available': random.randint(1, 50),
+            })
+    
+    flights.sort(key=lambda x: x['price'])
+    return flights
+
+def generate_price_history(origin, destination, target_date):
+    history = []
+    base_price = 4500
+    
+    for i in range(60):
+        day = target_date - timedelta(days=30 - i)
+        fluctuation = random.uniform(0.85, 1.25)
+        price = int(base_price * fluctuation)
+        
+        history.append({
+            'date': day.isoformat(),
+            'price': price,
+            'day_of_week': day.strftime('%A'),
+        })
+    
+    return history
+
+def init_db():
+    with main_bp.app.app_context():
+        db.create_all()
+        
+        for airline_data in AIRLINES_DATA:
+            existing = Airline.query.filter_by(code=airline_data['code']).first()
+            if not existing:
+                airline = Airline(**airline_data)
+                db.session.add(airline)
+        
+        db.session.commit()
