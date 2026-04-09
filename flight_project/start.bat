@@ -2,10 +2,10 @@
 cd /d "%~dp0flight_project"
 
 echo Checking dependencies...
-pip show waitress >nul 2>&1
+pip show serpapi >nul 2>&1
 if %ERRORLEVEL% neq 0 (
-    echo Installing waitress...
-    pip install waitress
+    echo Installing serpapi...
+    pip install serpapi
 )
 
 echo Installing requirements...

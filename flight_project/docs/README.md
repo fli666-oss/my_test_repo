@@ -10,6 +10,7 @@
 - Flask
 - SQLite
 - Chart.js (前端图表)
+- SerpAPI (可选，Google Flights 实时数据)
 
 ## 环境要求
 
@@ -20,7 +21,7 @@
 
 ## Windows 部署指南
 
-### 方式一：开发模式运行（推荐开发测试）
+### 方式一：开发模式运行
 
 ```powershell
 cd C:\Users\fli\Documents\Repositories\my_test_repo\flight_project
@@ -32,63 +33,7 @@ python run.py
 
 ---
 
-### 方式二：生产环境运行（Gunicorn）
-
-#### 1. 安装依赖和Gunicorn
-
-```powershell
-pip install -r requirements.txt
-pip install gunicorn
-```
-
-#### 2. 启动服务
-
-```powershell
-cd C:\Users\fli\Documents\Repositories\my_test_repo\flight_project
-gunicorn -w 4 -b 0.0.0.0:5000 "run:app"
-```
-
-- `-w 4`: 4个工作进程
-- `-b 0.0.0.0:5000`: 监听地址和端口
-
-访问 http://localhost:5000
-
-#### 3. 后台运行（带日志）
-
-```powershell
-gunicorn -w 4 -b 0.0.0.0:5000 --access-logfile access.log --error-logfile error.log --daemon "run:app"
-```
-
-#### 4. 停止服务
-
-```powershell
-taskkill /F /IM gunicorn.exe
-```
-
----
-
-### 方式三：使用批处理脚本（推荐）
-
-创建启动脚本 `start.bat`：
-
-```batch
-@echo off
-cd /d "%~dp0flight_project"
-echo Starting Flight Search Server...
-gunicorn -w 4 -b 0.0.0.0:5000 --daemon "run:app"
-echo Server started on http://localhost:5000
-timeout /t 2 >nul
-```
-
-创建停止脚本 `stop.bat`：
-
-```batch
-@echo off
-echo Stopping Gunicorn...
-taskkill /F /IM gunicorn.exe 2>nul
-echo Server stopped
-pause
-```
+### 方式二：使用批处理脚本（推荐）
 
 双击 `start.bat` 启动，双击 `stop.bat` 停止。
 
@@ -96,7 +41,44 @@ pause
 
 ### SQLite 数据库
 
-数据库文件 `flights.db` 会在首次运行时自动创建在 `flight_project` 目录下。
+数据库文件 `flights.db` 会在首次运行时自动创建。
+
+---
+
+## SerpAPI 集成（可选）
+
+### 1. 注册 SerpAPI
+
+访问 https://serpapi.com/signup 获取免费 API Key（每月 100 次免费搜索）
+
+### 2. 配置环境变量
+
+设置以下环境变量启用 SerpAPI：
+
+```powershell
+# 启用 SerpAPI
+set USE_SERPAPI=true
+set SERPAPI_API_KEY=你的API密钥
+```
+
+或创建 `.env` 文件：
+
+```
+USE_SERPAPI=true
+SERPAPI_API_KEY=你的API密钥
+```
+
+### 3. 数据源说明
+
+- **默认**: 使用模拟数据（免费）
+- **启用 SerpAPI**: 使用 Google Flights 实时数据
+
+API 调用示例参数：
+- `departure_id`: 出发机场 IATA 代码（如 PEK）
+- `arrival_id`: 到达机场 IATA 代码（如 CDG）
+- `outbound_date`: 出发日期（YYYY-MM-DD）
+- `return_date`: 返回日期（YYYY-MM-DD）
+- `currency`: 货币代码（CNY/USD/EUR）
 
 ---
 
@@ -108,6 +90,7 @@ pause
 - 航班列表展示：航空公司、起降时间、价格、剩余座位
 - 价格趋势图（时间序列）
 - 后台SQLite数据库存储
+- SerpAPI 集成实时价格查询
 
 ## 数据库表
 

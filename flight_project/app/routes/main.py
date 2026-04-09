@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, request, jsonify
 from datetime import datetime, date, timedelta
+import os
 import random
 
 main_bp = Blueprint('main', __name__)
@@ -17,6 +18,9 @@ AIRLINES_DATA = [
     {'code': 'EK', 'name': 'Emirates', 'name_cn': '阿联酋航空'},
 ]
 
+USE_SERPAPI = os.environ.get('USE_SERPAPI', 'false').lower() == 'true'
+SERPAPI_API_KEY = os.environ.get('SERPAPI_API_KEY', '')
+
 @main_bp.route('/')
 def index():
     return render_template('index.html')
@@ -28,35 +32,48 @@ def search_flights():
     
     origin = data.get('origin', 'PEK')
     destination = data.get('destination', 'CDG')
-    departure_date = datetime.strptime(data.get('departure_date'), '%Y-%m-%d').date()
+    departure_date = data.get('departure_date')
     return_date = data.get('return_date')
-    if return_date:
-        return_date = datetime.strptime(return_date, '%Y-%m-%d').date()
     passengers = int(data.get('passengers', 1))
     cabin_class = data.get('cabin_class', 'economy')
+    
+    if departure_date:
+        departure_date_obj = datetime.strptime(departure_date, '%Y-%m-%d').date()
+    else:
+        return jsonify({'error': 'Missing departure_date'}), 400
+    
+    if return_date:
+        return_date_obj = datetime.strptime(return_date, '%Y-%m-%d').date()
+    else:
+        return_date_obj = None
     
     search = SearchHistory(
         origin=origin,
         destination=destination,
-        departure_date=departure_date,
-        return_date=return_date,
+        departure_date=departure_date_obj,
+        return_date=return_date_obj,
         passengers=passengers,
         cabin_class=cabin_class
     )
     db.session.add(search)
     db.session.commit()
     
-    flights = search_flights_mock(origin, destination, departure_date, cabin_class)
+    if USE_SERPAPI and SERPAPI_API_KEY:
+        flights = search_flights_serpapi(origin, destination, departure_date, return_date, cabin_class)
+    else:
+        flights = search_flights_mock(origin, destination, departure_date_obj, cabin_class)
+    
     return jsonify({
         'flights': flights,
         'search_info': {
             'origin': origin,
             'destination': destination,
-            'departure_date': departure_date.isoformat(),
-            'return_date': return_date.isoformat() if return_date else None,
+            'departure_date': departure_date,
+            'return_date': return_date,
             'passengers': passengers,
             'cabin_class': cabin_class
-        }
+        },
+        'data_source': 'serpapi' if USE_SERPAPI and SERPAPI_API_KEY else 'mock'
     })
 
 @main_bp.route('/price-history')
@@ -78,6 +95,73 @@ def get_airlines():
     from app.models.models import db, Airline
     airlines = Airline.query.all()
     return jsonify([{'code': a.code, 'name': a.name, 'name_cn': a.name_cn} for a in airlines])
+
+def search_flights_serpapi(origin, destination, outbound_date, return_date, cabin_class):
+    try:
+        from serpapi import GoogleSearch
+        
+        params = {
+            "api_key": SERPAPI_API_KEY,
+            "engine": "google_flights",
+            "departure_id": origin,
+            "arrival_id": destination,
+            "outbound_date": outbound_date,
+            "currency": "CNY"
+        }
+        
+        if return_date:
+            params["return_date"] = return_date
+        
+        search = GoogleSearch(params)
+        results = search.get_dict()
+        
+        flights = []
+        best_flights = results.get('best_flights', [])
+        other_flights = results.get('other_flights', [])
+        
+        all_flights = best_flights + other_flights
+        
+        for i, flight in enumerate(all_flights):
+            flight_details = flight.get('flights', [])
+            total_duration = flight.get('total_duration', 0)
+            price = flight.get('price', 0)
+            
+            if not price:
+                continue
+            
+            airline_info = flight_details[0] if flight_details else {}
+            airline_name = airline_info.get('airline', 'Unknown')
+            
+            dep_time = flight_details[0].get('departure_time', '') if flight_details else ''
+            arr_time = flight_details[-1].get('arrival_time', '') if flight_details else ''
+            
+            num_stops = len(flight_details) - 1 if flight_details else 0
+            stops_airports = [f.get('departure_airport', {}).get('id', '') for f in flight_details[1:]] if len(flight_details) > 1 else []
+            
+            flights.append({
+                'id': i,
+                'flight_number': airline_info.get('flight_number', 'N/A'),
+                'airline': airline_name,
+                'airline_zh': airline_name,
+                'origin': origin,
+                'destination': destination,
+                'departure_time': dep_time,
+                'arrival_time': arr_time,
+                'duration': total_duration // 60 if total_duration else 0,
+                'stops': num_stops,
+                'stops_airports': stops_airports,
+                'price': price,
+                'cabin_class': cabin_class,
+                'aircraft': 'N/A',
+                'seats_available': random.randint(1, 20),
+            })
+        
+        flights.sort(key=lambda x: x['price'])
+        return flights
+        
+    except Exception as e:
+        print(f"SerpAPI error: {e}")
+        return search_flights_mock(origin, destination, datetime.strptime(outbound_date, '%Y-%m-%d').date(), cabin_class)
 
 def search_flights_mock(origin, destination, departure_date, cabin_class):
     flights = []
