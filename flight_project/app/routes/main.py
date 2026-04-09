@@ -59,7 +59,7 @@ def search_flights():
     db.session.commit()
     
     if USE_SERPAPI and SERPAPI_API_KEY:
-        flights = search_flights_serpapi(origin, destination, departure_date, return_date, cabin_class)
+        flights = search_flights_serpapi(origin, destination, departure_date, return_date, cabin_class, passengers)
     else:
         flights = search_flights_mock(origin, destination, departure_date_obj, cabin_class)
     
