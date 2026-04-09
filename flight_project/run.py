@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+import os
 from flask import Flask
 
 def create_app():
-    app = Flask(__name__)
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    app = Flask(__name__,
+                template_folder=os.path.join(base_dir, 'app', 'templates'),
+                static_folder=os.path.join(base_dir, 'app', 'static'))
     app.config['SECRET_KEY'] = 'dev-key-change-in-production'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flights.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
