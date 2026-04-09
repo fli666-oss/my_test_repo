@@ -2,10 +2,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('flightSearchForm');
     const departureDateInput = document.getElementById('departure_date');
     const returnDateInput = document.getElementById('return_date');
+    const typeSelect = document.getElementById('type');
     
     const today = new Date().toISOString().split('T')[0];
     departureDateInput.min = today;
     returnDateInput.min = today;
+    
+    function updateReturnDateVisibility() {
+        const tripType = parseInt(typeSelect.value);
+        returnDateInput.parentElement.style.display = tripType === 1 ? 'block' : 'none';
+        returnDateInput.required = tripType === 1;
+    }
+    
+    typeSelect.addEventListener('change', updateReturnDateVisibility);
+    updateReturnDateVisibility();
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -17,7 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
             departure_date: formData.get('departure_date'),
             return_date: formData.get('return_date') || null,
             passengers: parseInt(formData.get('passengers')),
-            cabin_class: formData.get('cabin_class')
+            travel_class: parseInt(formData.get('travel_class') || 1),
+            type: parseInt(formData.get('type') || 1),
+            adults: parseInt(formData.get('passengers')),
+            sort_by: parseInt(formData.get('sort_by') || 1),
+            stops: parseInt(formData.get('stops') || 0),
+            max_duration: parseInt(formData.get('max_duration') || 1500)
         };
         
         const resultsSection = document.getElementById('results');

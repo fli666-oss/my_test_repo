@@ -25,16 +25,36 @@ def search_flights():
     passengers = int(data.get('passengers', 1))
     cabin_class = data.get('cabin_class', 'economy')
     
+    trip_type = int(data.get('type', 1))
+    travel_class = int(data.get('travel_class', 1))
+    adults = int(data.get('adults', 1))
+    sort_by = int(data.get('sort_by', 1))
+    stops = int(data.get('stops', 0))
+    max_duration = int(data.get('max_duration', 1500))
+    
+    travel_class_to_cabin = {
+        1: 'economy',
+        2: 'premium_economy',
+        3: 'business',
+        4: 'first'
+    }
+    cabin_class = travel_class_to_cabin.get(travel_class, 'economy')
+    
     if departure_date:
         departure_date_obj = datetime.strptime(departure_date, '%Y-%m-%d').date()
     else:
         return jsonify({'error': 'Missing departure_date'}), 400
     
-    if return_date:
+    if trip_type == 1 and not return_date:
+        return jsonify({'error': 'return_date is required for round trip'}), 400
+    
+    if trip_type == 1 and return_date:
         return_date_obj = datetime.strptime(return_date, '%Y-%m-%d').date()
-    else:
+    elif trip_type == 1:
         return_date_obj = (departure_date_obj + timedelta(days=14))
         return_date = return_date_obj.isoformat()
+    else:
+        return_date_obj = None
     
     search = SearchHistory(
         origin=origin,
@@ -47,10 +67,17 @@ def search_flights():
     db.session.add(search)
     db.session.commit()
     
-    if USE_SERPAPI and SERPAPI_API_KEY:
-        flights = search_flights_serpapi(origin, destination, departure_date, return_date, cabin_class, passengers)
-    else:
-        flights = search_flights_mock(origin, destination, departure_date_obj, cabin_class)
+    if not USE_SERPAPI or not SERPAPI_API_KEY:
+        return jsonify({'error': 'SerpAPI is not configured. Please set USE_SERPAPI=true and SERPAPI_API_KEY environment variables.'}), 500
+    
+    flights = search_flights_serpapi(
+        origin, destination, departure_date, return_date, 
+        cabin_class, passengers, trip_type, travel_class, 
+        adults, sort_by, stops, max_duration
+    )
+    
+    if flights is None:
+        return jsonify({'error': 'SerpAPI request failed. Please check your API key and try again.'}), 500
     
     for flight in flights:
         price_record = FlightPrice(
@@ -72,9 +99,15 @@ def search_flights():
             'departure_date': departure_date,
             'return_date': return_date,
             'passengers': passengers,
-            'cabin_class': cabin_class
+            'cabin_class': cabin_class,
+            'type': trip_type,
+            'travel_class': travel_class,
+            'adults': adults,
+            'sort_by': sort_by,
+            'stops': stops,
+            'max_duration': max_duration
         },
-        'data_source': 'serpapi' if USE_SERPAPI and SERPAPI_API_KEY else 'mock'
+        'data_source': 'serpapi'
     })
 
 @main_bp.route('/price-history')
@@ -122,31 +155,62 @@ def get_airlines():
     airlines = Airline.query.all()
     return jsonify([{'code': a.code, 'name': a.name, 'name_cn': a.name_cn} for a in airlines])
 
-def search_flights_serpapi(origin, destination, outbound_date, return_date, cabin_class, passengers=1):
+def search_flights_serpapi(origin, destination, outbound_date, return_date, cabin_class, passengers=1, trip_type=1, travel_class=1, adults=1, sort_by=1, stops=0, max_duration=1500):
+    from serpapi import Client
+    
+    if not SERPAPI_API_KEY:
+        return None
+    
     try:
-        from serpapi import GoogleSearch
-        
         travel_class_map = {
-            'economy': 'ECONOMY',
-            'business': 'BUSINESS',
-            'first': 'FIRST'
+            1: 'ECONOMY',
+            2: 'PREMIUM_ECONOMY',
+            3: 'BUSINESS',
+            4: 'FIRST'
+        }
+        
+        trip_type_map = {
+            1: 'ROUND_TRIP',
+            2: 'ONE_WAY',
+            3: 'MULTI_CITY'
+        }
+        
+        sort_by_map = {
+            1: 'BEST',
+            2: 'PRICE',
+            3: 'DURATION'
+        }
+        
+        stops_map = {
+            0: None,
+            1: 0,
+            2: 1,
+            3: 2
         }
         
         params = {
-            "api_key": SERPAPI_API_KEY,
             "engine": "google_flights",
             "departure_id": origin,
             "arrival_id": destination,
-            "outbound_date": outbound_date,
-            "return_date": return_date,
             "currency": "EUR",
-            "travel_class": travel_class_map.get(cabin_class, 'ECONOMY'),
-            "adults": passengers,
-            "trip_type": "ROUND_TRIP"
+            "type": str(trip_type),
+            "outbound_date": outbound_date,
+            "travel_class": travel_class_map.get(travel_class, 'ECONOMY'),
+            "adults": adults,
+            "sort_by": sort_by_map.get(sort_by, 'BEST')
         }
         
-        search = GoogleSearch(params)
-        results = search.get_dict()
+        if trip_type == 1 and return_date:
+            params["return_date"] = return_date
+        
+        if stops_map.get(stops) is not None:
+            params["max_stops"] = stops_map[stops]
+        
+        if max_duration:
+            params["duration"] = max_duration
+        
+        client = Client(api_key=SERPAPI_API_KEY)
+        results = client.search(params)
         
         flights = []
         best_flights = results.get('best_flights', [])
@@ -162,22 +226,31 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             if not price:
                 continue
             
-            airline_info = flight_details[0] if flight_details else {}
-            airline_name = airline_info.get('airline', 'Unknown')
+            first_segment = flight_details[0] if flight_details else {}
+            last_segment = flight_details[-1] if flight_details else {}
             
-            dep_time = flight_details[0].get('departure_time', '') if flight_details else ''
-            arr_time = flight_details[-1].get('arrival_time', '') if flight_details else ''
+            dep_airport = first_segment.get('departure_airport', {})
+            arr_airport = last_segment.get('arrival_airport', {})
+            
+            dep_time = dep_airport.get('time', '') if dep_airport else ''
+            arr_time = arr_airport.get('time', '') if arr_airport else ''
             
             num_stops = len(flight_details) - 1 if flight_details else 0
-            stops_airports = [f.get('departure_airport', {}).get('id', '') for f in flight_details[1:]] if len(flight_details) > 1 else []
+            
+            layovers = flight.get('layovers', [])
+            stops_airports = [layover.get('id', '') for layover in layovers]
+            
+            flight_number = first_segment.get('flight_number', 'N/A')
+            airline = first_segment.get('airline', 'Unknown')
+            airplane = first_segment.get('airplane', 'N/A')
             
             flights.append({
                 'id': i,
-                'flight_number': airline_info.get('flight_number', 'N/A'),
-                'airline': airline_name,
-                'airline_zh': airline_name,
-                'origin': origin,
-                'destination': destination,
+                'flight_number': flight_number,
+                'airline': airline,
+                'airline_zh': airline,
+                'origin': dep_airport.get('id', origin),
+                'destination': arr_airport.get('id', destination),
                 'departure_time': dep_time,
                 'arrival_time': arr_time,
                 'duration': total_duration // 60 if total_duration else 0,
@@ -185,16 +258,24 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
                 'stops_airports': stops_airports,
                 'price': price,
                 'cabin_class': cabin_class,
-                'aircraft': 'N/A',
+                'aircraft': airplane,
                 'seats_available': random.randint(1, 20),
+                'type': flight.get('type', ''),
+                'carbon_emissions': flight.get('carbon_emissions', {}),
             })
         
-        flights.sort(key=lambda x: x['price'])
+        sort_options = {
+            1: lambda x: x['price'],
+            2: lambda x: x['price'],
+            3: lambda x: x['duration']
+        }
+        flights.sort(key=sort_options.get(sort_by, lambda x: x['price']))
+        
         return flights
         
     except Exception as e:
         print(f"SerpAPI error: {e}")
-        return search_flights_mock(origin, destination, datetime.strptime(outbound_date, '%Y-%m-%d').date(), cabin_class)
+        return None
 
 def search_flights_mock(origin, destination, departure_date, cabin_class):
     flights = []

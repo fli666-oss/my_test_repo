@@ -55,11 +55,47 @@
                     </div>
                     <div class="form-group">
                         <label>舱位等级</label>
-                        <select name="cabin_class" id="cabin_class">
-                            <option value="economy" selected>经济舱</option>
-                            <option value="business">商务舱</option>
-                            <option value="first">头等舱</option>
+                        <select name="travel_class" id="travel_class">
+                            <option value="1" selected>经济舱</option>
+                            <option value="2">超级经济舱</option>
+                            <option value="3">商务舱</option>
+                            <option value="4">头等舱</option>
                         </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>行程类型</label>
+                        <select name="type" id="type">
+                            <option value="1" selected>往返</option>
+                            <option value="2">单程</option>
+                            <option value="3">多城市</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>中转次数</label>
+                        <select name="stops" id="stops">
+                            <option value="0" selected>不限</option>
+                            <option value="1">直飞</option>
+                            <option value="2">1次中转以内</option>
+                            <option value="3">2次中转以内</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>排序方式</label>
+                        <select name="sort_by" id="sort_by">
+                            <option value="1" selected>推荐航班</option>
+                            <option value="2">价格</option>
+                            <option value="3">时长</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>最大飞行时长(分钟)</label>
+                        <input type="number" name="max_duration" id="max_duration" value="1500">
                     </div>
                 </div>
 
