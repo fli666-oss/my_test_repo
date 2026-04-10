@@ -9,9 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     returnDateInput.min = today;
     
     function updateReturnDateVisibility() {
-        const tripType = parseInt(typeSelect.value);
-        returnDateInput.parentElement.style.display = tripType === 1 ? 'block' : 'none';
-        returnDateInput.required = tripType === 1;
+        const tripType = typeSelect.value;
+        returnDateInput.parentElement.style.display = tripType === 'round_trip' ? 'block' : 'none';
+        returnDateInput.required = tripType === 'round_trip';
     }
     
     typeSelect.addEventListener('change', updateReturnDateVisibility);
@@ -27,12 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
             departure_date: formData.get('departure_date'),
             return_date: formData.get('return_date') || null,
             passengers: parseInt(formData.get('passengers')),
-            travel_class: parseInt(formData.get('travel_class') || 1),
-            type: parseInt(formData.get('type') || 1),
+            travel_class: formData.get('travel_class'),
+            type: formData.get('type'),
             adults: parseInt(formData.get('passengers')),
-            sort_by: parseInt(formData.get('sort_by') || 1),
-            stops: parseInt(formData.get('stops') || 0),
-            max_duration: parseInt(formData.get('max_duration') || 1500)
+            sort_by: formData.get('sort_by'),
+            stops: formData.get('stops')
         };
         
         const resultsSection = document.getElementById('results');

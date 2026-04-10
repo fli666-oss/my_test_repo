@@ -18,8 +18,8 @@ def search_flights():
     from app.models.models import db, SearchHistory, FlightPrice
     data = request.get_json()
     
-    origin = data.get('origin', 'PEK')
-    destination = data.get('destination', 'CDG')
+    origin = data.get('origin', 'CDG')
+    destination = data.get('destination', 'PEK')
     departure_date = data.get('departure_date')
     return_date = data.get('return_date')
     passengers = int(data.get('passengers', 1))
@@ -163,29 +163,29 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
     
     try:
         travel_class_map = {
-            1: "1",
-            2: "2",
-            3: "3",
-            4: "4"
+            "economy": "1",
+            "premium_economy": "2",
+            "business": "3",
+            "first": "4"
         }
         
         trip_type_map = {
-            1: 1,
-            2: 2,
-            3: 3
+            "round_trip": 1,
+            "one_way": 2,
+            "multi_city": 3
         }
         
         sort_by_map = {
-            1: "1",
-            2: "2",
-            3: "3"
+            "best": "1",
+            "price": "2",
+            "duration": "3"
         }
         
         stops_map = {
-            0: None,
-            1: 1,
-            2: 2,
-            3: 3
+            "any": None,
+            "direct": 1,
+            "1_stop": 2,
+            "2_stops": 3
         }
         
         params = {
@@ -201,10 +201,10 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             "duration": "1500"
         }
         
-        if trip_type == 1 and return_date:
+        if trip_type == "round_trip" and return_date:
             params["return_date"] = return_date
         
-        if stops != 0:
+        if stops != "any":
             params["max_stops"] = str(stops_map.get(stops, 1))
         
         client = Client(api_key=SERPAPI_API_KEY)
