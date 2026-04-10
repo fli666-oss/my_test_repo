@@ -52,8 +52,10 @@ def search_flights(api_key, origin, destination, departure_date, return_date=Non
         client = Client(api_key=api_key)
         results = client.search(params)
         
-        logger.info(f"Response keys: {list(results.keys())}")
-        return results
+        results_dict = dict(results)
+        
+        logger.info(f"Response keys: {list(results_dict.keys())}")
+        return results_dict
         
     except Exception as e:
         logger.error(f"SerpAPI error: {e}")
