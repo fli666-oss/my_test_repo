@@ -3,6 +3,18 @@ from flask import Blueprint, render_template, request, jsonify
 from datetime import datetime, date, timedelta
 import os
 import random
+import logging
+import json
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('flight_search.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 main_bp = Blueprint('main', __name__)
 
@@ -17,6 +29,8 @@ def index():
 def search_flights():
     from app.models.models import db, SearchHistory, FlightPrice
     data = request.get_json()
+    
+    logger.info(f"Received search request: {json.dumps(data, ensure_ascii=False)}")
     
     origin = data.get('origin', 'CDG')
     destination = data.get('destination', 'PEK')
@@ -230,8 +244,12 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
         if stops != 'any':
             params["max_stops"] = stops_map.get(stops, "1")
         
+        logger.info(f"SerpAPI request params: {json.dumps(params, ensure_ascii=False)}")
+        
         client = Client(api_key=SERPAPI_API_KEY)
         results = client.search(params)
+        
+        logger.info(f"SerpAPI response keys: {list(results.keys())}")
         
         flights = []
         best_flights = results.get('best_flights', [])
