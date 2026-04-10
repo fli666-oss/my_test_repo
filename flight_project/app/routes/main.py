@@ -38,17 +38,24 @@ def search_flights():
     }
     cabin_class = travel_class_to_cabin.get(travel_class, 'economy')
     
+    trip_type_to_num = {
+        'round_trip': 1,
+        'one_way': 2,
+        'multi_city': 3
+    }
+    trip_type_num = trip_type_to_num.get(trip_type, 1)
+    
     if departure_date:
         departure_date_obj = datetime.strptime(departure_date, '%Y-%m-%d').date()
     else:
         return jsonify({'error': 'Missing departure_date'}), 400
     
-    if trip_type == 'round_trip' and not return_date:
+    if trip_type_num == 1 and not return_date:
         return jsonify({'error': 'return_date is required for round trip'}), 400
     
-    if trip_type == 'round_trip' and return_date:
+    if trip_type_num == 1 and return_date:
         return_date_obj = datetime.strptime(return_date, '%Y-%m-%d').date()
-    elif trip_type == 'round_trip':
+    elif trip_type_num == 1:
         return_date_obj = (departure_date_obj + timedelta(days=14))
         return_date = return_date_obj.isoformat()
     else:
@@ -161,29 +168,29 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
     
     try:
         travel_class_map = {
-            "economy": 1,
-            "premium_economy": 2,
-            "business": 3,
-            "first": 4
+            "economy": "1",
+            "premium_economy": "2",
+            "business": "3",
+            "first": "4"
         }
         
         trip_type_map = {
-            "round_trip": 1,
-            "one_way": 2,
-            "multi_city": 3
+            "round_trip": "1",
+            "one_way": "2",
+            "multi_city": "3"
         }
         
         sort_by_map = {
-            "best": 1,
-            "price": 2,
-            "duration": 3
+            "best": "1",
+            "price": "2",
+            "duration": "3"
         }
         
         stops_map = {
-            "any": 0,
-            "direct": 1,
-            "1_stop": 2,
-            "2_stops": 3
+            "any": "0",
+            "direct": "1",
+            "1_stop": "2",
+            "2_stops": "3"
         }
         
         params = {
@@ -191,7 +198,7 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             "departure_id": origin,
             "arrival_id": destination,
             "currency": "EUR",
-            "type": trip_type_map.get(trip_type, 1),
+            "type": trip_type_map.get(trip_type, "1"),
             "outbound_date": outbound_date,
             "travel_class": travel_class_map.get(travel_class, "1"),
             "adults": str(adults),
@@ -261,9 +268,9 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             })
         
         sort_options = {
-            1: lambda x: x['price'],
-            2: lambda x: x['price'],
-            3: lambda x: x['duration']
+            "1": lambda x: x['price'],
+            "2": lambda x: x['price'],
+            "3": lambda x: x['duration']
         }
         flights.sort(key=sort_options.get(sort_by, lambda x: x['price']))
         
