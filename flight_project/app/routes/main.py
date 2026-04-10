@@ -304,9 +304,12 @@ def search_serpapi_direct():
         "departure_id": departure_id,
         "arrival_id": arrival_id,
         "outbound_date": outbound_date,
+        "currency": data.get('currency', 'EUR'),
+        "duration": data.get('duration', 1500),
+        "stops": data.get('stops', 0),
     }
     
-    optional_fields = ['return_date', 'travel_class', 'type', 'adults', 'sort_by', 'departure_token', 'currency', 'duration']
+    optional_fields = ['return_date', 'travel_class', 'type', 'adults', 'sort_by', 'departure_token']
     for field in optional_fields:
         if data.get(field):
             params[field] = data[field]
@@ -449,6 +452,9 @@ def search_price_insights():
         "departure_id": departure_id,
         "arrival_id": arrival_id,
         "outbound_date": outbound_date,
+        "currency": data.get('currency', 'EUR'),
+        "duration": data.get('duration', '1500'),
+        "stops": data.get('stops', 0),
     }
     
     optional_fields = ['return_date', 'travel_class', 'type', 'adults', 'sort_by']
@@ -591,14 +597,13 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             "travel_class": travel_class_map.get(travel_class, "1"),
             "adults": str(adults),
             "sort_by": sort_by_map.get(sort_by, "1"),
-            "duration": "1500"
+            "duration": 1500,
+            "stops": stops_map.get(stops, 0)
         }
         
         if trip_type == 'round_trip' and return_date:
             params["return_date"] = return_date
         
-        if stops != 'any':
-            params["max_stops"] = stops_map.get(stops, "1")
         
         logger.info(f"SerpAPI request params: {json.dumps(params, ensure_ascii=False)}")
         
