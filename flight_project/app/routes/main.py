@@ -27,6 +27,75 @@ def index():
 
 @main_bp.route('/search', methods=['POST'])
 def search_flights():
+    """
+    Search for flights using SerpAPI
+    ---
+    tags:
+      - Flights
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - departure_id
+            - arrival_id
+            - outbound_date
+          properties:
+            departure_id:
+              type: string
+              example: "CDG"
+              description: "Departure airport code (e.g., CDG, PEK, LHR)"
+            arrival_id:
+              type: string
+              example: "PEK"
+              description: "Arrival airport code (e.g., PEK, CDG, LHR)"
+            outbound_date:
+              type: string
+              example: "2026-05-01"
+              description: "Departure date (YYYY-MM-DD)"
+            return_date:
+              type: string
+              example: "2026-05-15"
+              description: "Return date for round trip (YYYY-MM-DD)"
+            type:
+              type: string
+              example: "1"
+              description: "Trip type: 	1 - Round trip (default), 2 - One way, 3 - Multi-city"
+            travel_class:
+              type: string
+              example: "1"
+              description: "Cabin class: 1 - Economy (default),	2 - Premium Economy, 3 - Business, 4 - Firs"
+            adults:
+              type: integer
+              example: 1
+              description: "Number of adult passengers"
+            sort_by:
+              type: string
+              example: "5"
+              description: "Sort by: 1 - Top flights (default), 2 - Price,	5 - Duration"
+            stops:
+              type: string
+              example: "1"
+              description: "Stops: , 0-Any, 1-direct, 2-1_stop, 3-2_stops"
+    responses:
+      200:
+        description: Flight search results
+        schema:
+          type: object
+          properties:
+            flights:
+              type: array
+            search_info:
+              type: object
+            data_source:
+              type: string
+      400:
+        description: Missing required parameters
+      500:
+        description: SerpAPI error or not configured
+    """
     from app.models.models import db, SearchHistory, FlightPrice
     data = request.get_json()
     

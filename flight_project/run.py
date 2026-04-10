@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from flask import Flask
+from flasgger import Swagger
 
 def create_app():
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -10,6 +11,25 @@ def create_app():
     app.config['SECRET_KEY'] = 'dev-key-change-in-production'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flights.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
+    swagger_config = {
+        "headers": [],
+        "specs": [
+            {
+                "endpoint": 'apispec',
+                "route": '/apispec.json',
+                "rule_filter": lambda rule: True,
+                "model_filter": lambda tag: True,
+            }
+        ],
+        "static_url_path": "/flasgger_static",
+        "static_folder": "static",
+        "title": "Flight Search API",
+        "version": "1.0",
+        "description": "API for searching flights using SerpAPI",
+    }
+    
+    swagger = Swagger(app, config=swagger_config)
     
     from app.models.models import db, init_db
     init_db(app)
