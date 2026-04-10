@@ -129,6 +129,52 @@ def create_api_spec():
                     }
                 }
             },
+            "/search-price-insights": {
+                "post": {
+                    "tags": ["Flights"],
+                    "summary": "Search flights with price insights and save to database",
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["api_key", "departure_id", "arrival_id", "outbound_date"],
+                                    "properties": {
+                                        "api_key": {"type": "string", "description": "SerpAPI key"},
+                                        "departure_id": {"type": "string", "example": "CDG"},
+                                        "arrival_id": {"type": "string", "example": "PEK"},
+                                        "outbound_date": {"type": "string", "example": "2026-10-16"},
+                                        "return_date": {"type": "string", "example": "2026-10-31"},
+                                        "travel_class": {"type": "string", "default": "1"},
+                                        "type": {"type": "string", "default": "1"},
+                                        "adults": {"type": "string", "default": "1"},
+                                        "sort_by": {"type": "string", "default": "1"}
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {"description": "Flight results with price_insights"},
+                        "400": {"description": "Missing required parameters"},
+                        "500": {"description": "API error"}
+                    }
+                }
+            },
+            "/price-insights-chart": {
+                "get": {
+                    "tags": ["Flights"],
+                    "summary": "Get price insights data from database for chart",
+                    "parameters": [
+                        {"name": "origin", "in": "query", "schema": {"type": "string", "default": "CDG"}},
+                        {"name": "destination", "in": "query", "schema": {"type": "string", "default": "PEK"}}
+                    ],
+                    "responses": {
+                        "200": {"description": "Chart data with price history"}
+                    }
+                }
+            },
             "/airlines": {
                 "get": {
                     "tags": ["Flights"],

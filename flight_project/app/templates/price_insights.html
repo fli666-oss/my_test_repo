@@ -65,16 +65,31 @@
         .info-label {
             font-weight: bold;
             color: #555;
+            font-size: 14px;
         }
         .info-value {
             color: #007bff;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .typical-range {
+            background: linear-gradient(90deg, #ff6b6b, #ffa500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+            font-size: 22px;
+        }
+        .typical-low {
+            color: #28a745;
+            font-weight: bold;
             font-size: 18px;
         }
         .price-level {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 4px;
             font-weight: bold;
+            font-size: 16px;
         }
         .price-level-low { background: #28a745; color: white; }
         .price-level-medium { background: #ffc107; color: #333; }
@@ -235,8 +250,8 @@
                     
                     const typicalRange = priceInsights.typical_price_range;
                     if (typicalRange && typicalRange.length === 2) {
-                        document.getElementById('typicalPriceRange').textContent = 
-                            typicalRange[0] + ' - ' + typicalRange[1];
+                        const rangeEl = document.getElementById('typicalPriceRange');
+                        rangeEl.innerHTML = `<span class="typical-low">${typicalRange[0]}</span> - <span class="typical-range">${typicalRange[1]}</span>`;
                     } else {
                         document.getElementById('typicalPriceRange').textContent = '-';
                     }
@@ -256,29 +271,47 @@
         async function loadChart() {
             const origin = document.getElementById('origin').value;
             const destination = document.getElementById('destination').value;
+            const apiKey = document.getElementById('apiKey').value;
+            
+            const outboundDate = document.getElementById('outboundDate').value;
+            const returnDate = document.getElementById('returnDate').value;
+            const travelClass = document.getElementById('travelClass').value;
+            
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
             
             try {
                 const response = await fetch(`/price-insights-chart?origin=${origin}&destination=${destination}`);
                 const data = await response.json();
                 
-                if (data.length === 0) {
-                    document.getElementById('error').textContent = 'No historical data found';
+                if (data.length === 0 && apiKey) {
+                    document.getElementById('error').textContent = 'No historical data. Click Search Flights to query and save data.';
+                    return;
+                } else if (data.length === 0) {
+                    document.getElementById('error').textContent = 'No historical data found. Please enter API Key and click Search Flights.';
                     return;
                 }
                 
-                const tbody = document.querySelector('#historyTable tbody');
-                tbody.innerHTML = '';
+                document.getElementById('error').textContent = '';
                 
                 data.forEach(item => {
                     const row = tbody.insertRow();
                     row.insertCell().textContent = item.departure_date || '-';
                     row.insertCell().textContent = item.return_date || '-';
-                    row.insertCell().textContent = item.cabin_class || '-';
-                    row.insertCell().textContent = item.lowest_price || '-';
+                    
+                    const cabinCell = row.insertCell();
+                    const cabinMap = {'1': 'Economy', '2': 'Premium', '3': 'Business', '4': 'First'};
+                    cabinCell.textContent = cabinMap[item.cabin_class] || item.cabin_class || '-';
+                    
+                    const priceCell = row.insertCell();
+                    priceCell.textContent = item.lowest_price || '-';
+                    priceCell.style.fontWeight = 'bold';
+                    priceCell.style.color = '#007bff';
                     
                     const levelCell = row.insertCell();
                     levelCell.textContent = item.price_level || '-';
-                    levelCell.className = 'price-level-' + item.price_level;
+                    levelCell.className = 'price-level price-level-' + item.price_level;
+                    levelCell.style.margin = '0';
                     
                     row.insertCell().textContent = item.typical_price_range ? 
                         item.typical_price_range.join(' - ') : '-';
@@ -286,8 +319,20 @@
                         new Date(item.search_date).toLocaleDateString() : '-';
                 });
                 
+                if (data.length > 0) {
+                    const latestData = data[0];
+                    if (latestData.price_history && latestData.price_history.length > 0) {
+                        renderChart(
+                            latestData.price_history, 
+                            latestData.lowest_price, 
+                            latestData.typical_price_range
+                        );
+                    }
+                }
+                
             } catch (error) {
                 console.error('Error loading chart:', error);
+                document.getElementById('error').textContent = 'Error loading data: ' + error.message;
             }
         }
         
