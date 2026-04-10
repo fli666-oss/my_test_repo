@@ -1,13 +1,14 @@
 {
-    "api_key": "YOUR_API_KEY_HERE",
-    "origin": "PEK",
-    "destination": "CDG",
-    "departure_date": "2026-05-01",
-    "return_date": "2026-05-15",
+    "api_key": "3a9aaedb965e62e9bbc50abf516f4bfbf1b84f3c3eb41db3b7b1062336f28d28",
+    "engine": "google_flights",
+    "departure_id": "PEK",
+    "arrival_id": "CDG",
+    "outbound_date": "2026-04-24",
+    "return_date": "2026-04-30",
     "travel_class": "1",
-    "trip_type": "1",
+    "type": "1",
     "adults": 1,
     "sort_by": "1",
-    "stops": null,
-    "output": "flights_result.json"
+    "output": "flights_result.json",
+    "departure_token": "WyJDalJJVWtvNVdFRTNUMFpRZEhkQlEyOUhWM2RDUnkwdExTMHRMUzB0TFhaM2VHUXhNVUZCUVVGQlIyNVplWFZGU0dKM1lrOUJFZ1ZEUVRrek16Z2MiLFtbIlBFSyIsIjIwMjYtMDQtMjQiLCJDREciLG51bGwsIkNBIiwiOTMzIl1dXQ=="
 }

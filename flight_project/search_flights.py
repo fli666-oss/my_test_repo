@@ -18,9 +18,9 @@ def load_params_from_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def search_flights(api_key, origin, destination, departure_date, return_date=None, 
-                   travel_class='1', trip_type='1', adults=1, 
-                   sort_by='1', stops=None):
+def search_flights(api_key, departure_id, arrival_id, outbound_date, return_date=None, 
+                   currency="EUR", type="1", adults="1", 
+                   departure_token=None, travel_class="1", sort_by="1", duration="1500"):
     
     if not api_key:
         logger.error("API key not provided")
@@ -28,24 +28,26 @@ def search_flights(api_key, origin, destination, departure_date, return_date=Non
     
     params = {
         "engine": "google_flights",
-        "departure_id": origin,
-        "arrival_id": destination,
-        "currency": "EUR",
-        "type": trip_type,
-        "outbound_date": departure_date,
+        "departure_id": departure_id,
+        "arrival_id": arrival_id,
+        "currency": currency,
+        "type": type,
+        "outbound_date": outbound_date,          
+        "adults": adults,
         "travel_class": travel_class,
-        "adults": str(adults),
         "sort_by": sort_by,
-        "duration": "1500"
+        "duration": duration
+
+
     }
     
     if return_date:
         params["return_date"] = return_date
     
-    if stops:
-        params["max_stops"] = stops
+    if departure_token:
+        params["departure_token"] = departure_token
     
-    logger.info(f"Searching flights: {origin} -> {destination}")
+    logger.info(f"Searching flights: {departure_id} -> {arrival_id}")
     logger.info(f"Request params: {json.dumps(params)}")
     
     try:
@@ -76,23 +78,25 @@ def main():
         print("Error: api_key is required in params file")
         sys.exit(1)
     
-    if not params.get('departure_date'):
-        print("Error: departure_date is required")
+    if not params.get('outbound_date'):
+        print("Error: outbound_date is required")
         sys.exit(1)
     
     logger.info(f"Search parameters: {json.dumps(params, ensure_ascii=False)}")
     
     results = search_flights(
         api_key=api_key,
-        origin=params.get('origin', 'PEK'),
-        destination=params.get('destination', 'CDG'),
-        departure_date=params['departure_date'],
+        departure_id=params.get('departure_id', 'PEK'),
+        arrival_id=params.get('arrival_id', 'CDG'),
+        outbound_date=params['outbound_date'],
         return_date=params.get('return_date'),
+        currency=params.get('currency', 'EUR'),
+        type=params.get('type', '1'),
+        adults=params.get('adults', '1'),
+        departure_token=params.get('departure_token'),
         travel_class=params.get('travel_class', '1'),
-        trip_type=params.get('trip_type', '1'),
-        adults=params.get('adults', 1),
         sort_by=params.get('sort_by', '1'),
-        stops=params.get('stops')
+        duration=params.get('duration', '1500')
     )
     
     output_file = params.get('output', 'flights_result.json')
