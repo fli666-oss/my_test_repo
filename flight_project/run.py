@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from flask import Flask
-from flasgger import Swagger
+from flask_swagger_ui import get_swaggerui_blueprint
 
 def create_app():
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -12,30 +12,14 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flights.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    swagger_config = {
-        "headers": [],
-        "specs": [
-            {
-                "endpoint": 'apispec',
-                "route": '/apispec.json',
-                "rule_filter": lambda rule: True,
-                "model_filter": lambda tag: True,
-            }
-        ],
-        "swagger_ui": True,
-        "specs_route": "/apidocs/"
-    }
-    
-    swagger_template = {
-        "info": {
-            "title": "Flight Search API",
-            "version": "1.0",
-            "description": "API for searching flights using SerpAPI"
-        },
-        "basePath": "/"
-    }
-    
-    swagger = Swagger(app, config=swagger_config, template=swagger_template)
+    SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+        "/apidocs",
+        "/apispec.json",
+        config={
+            "app_name": "Flight Search API"
+        }
+    )
+    app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix="/apidocs")
     
     from app.models.models import db, init_db
     init_db(app)
@@ -48,6 +32,20 @@ def create_app():
     return app
 
 app = create_app()
+
+@app.route("/apispec.json")
+def create_api_spec():
+    from flask import jsonify
+    spec = {
+        "openapi": "3.0.0",
+        "info": {
+            "title": "Flight Search API",
+            "version": "1.0",
+            "description": "API for searching flights using SerpAPI"
+        },
+        "paths": {}
+    }
+    return jsonify(spec)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

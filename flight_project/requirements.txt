@@ -3,3 +3,4 @@ Flask-SQLAlchemy>=3.0.0
 waitress>=2.0.0
 serpapi>=1.0.0
 flasgger>=0.9.7
+flask-swagger-ui>=4.11.1
