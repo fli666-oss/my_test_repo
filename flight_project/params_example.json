@@ -1,0 +1,11 @@
+{
+    "origin": "PEK",
+    "destination": "CDG",
+    "departure_date": "2026-05-01",
+    "return_date": "2026-05-15",
+    "travel_class": "1",
+    "trip_type": "1",
+    "adults": 1,
+    "sort_by": "1",
+    "stops": null
+}
