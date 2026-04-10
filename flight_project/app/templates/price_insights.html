@@ -73,16 +73,22 @@
             font-weight: bold;
         }
         .typical-range {
-            background: linear-gradient(90deg, #ff6b6b, #ffa500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
-            font-size: 22px;
+            background: linear-gradient(90deg, #ff6b6b, #ffa500) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            font-weight: bold !important;
+            font-size: 20px !important;
+            padding: 4px 8px;
+            border: 2px solid #ff6b6b;
+            border-radius: 4px;
         }
         .typical-low {
-            color: #28a745;
-            font-weight: bold;
-            font-size: 18px;
+            color: #28a745 !important;
+            font-weight: bold !important;
+            font-size: 18px !important;
+            padding: 4px 8px;
+            border: 2px solid #28a745;
+            border-radius: 4px;
         }
         .price-level {
             display: inline-block;
@@ -307,14 +313,31 @@
                     priceCell.textContent = item.lowest_price || '-';
                     priceCell.style.fontWeight = 'bold';
                     priceCell.style.color = '#007bff';
+                    priceCell.style.fontSize = '16px';
                     
                     const levelCell = row.insertCell();
-                    levelCell.textContent = item.price_level || '-';
-                    levelCell.className = 'price-level price-level-' + item.price_level;
-                    levelCell.style.margin = '0';
+                    const levelMap = {'low': 'Low', 'medium': 'Medium', 'high': 'High'};
+                    levelCell.textContent = levelMap[item.price_level] || item.price_level || '-';
+                    levelCell.style.fontWeight = 'bold';
+                    levelCell.style.fontSize = '14px';
+                    if (item.price_level === 'low') {
+                        levelCell.style.backgroundColor = '#28a745';
+                        levelCell.style.color = 'white';
+                    } else if (item.price_level === 'medium') {
+                        levelCell.style.backgroundColor = '#ffc107';
+                        levelCell.style.color = '#333';
+                    } else if (item.price_level === 'high') {
+                        levelCell.style.backgroundColor = '#dc3545';
+                        levelCell.style.color = 'white';
+                    }
                     
-                    row.insertCell().textContent = item.typical_price_range ? 
-                        item.typical_price_range.join(' - ') : '-';
+                    const rangeCell = row.insertCell();
+                    if (item.typical_price_range && item.typical_price_range.length === 2) {
+                        rangeCell.innerHTML = `<span style="color:#28a745;font-weight:bold;font-size:16px;">${item.typical_price_range[0]}</span> - <span style="background: linear-gradient(90deg, #ff6b6b, #ffa500);-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight:bold;font-size:18px;">${item.typical_price_range[1]}</span>`;
+                    } else {
+                        rangeCell.textContent = '-';
+                    }
+                    
                     row.insertCell().textContent = item.search_date ? 
                         new Date(item.search_date).toLocaleDateString() : '-';
                 });
