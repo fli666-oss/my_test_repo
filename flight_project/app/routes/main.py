@@ -246,17 +246,18 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
         logger.info(f"SerpAPI request params: {json.dumps(params, ensure_ascii=False)}")
         
         client = Client(api_key=SERPAPI_API_KEY)
-        results = client.search(params)
+        outbound_results = client.search(params)
         
-        logger.info(f"SerpAPI response keys: {list(results.keys())}")
+        logger.info(f"Outbound response keys: {list(outbound_results.keys())}")
         
-        flights = []
-        best_flights = results.get('best_flights', [])
+        outbound_flights = []
+        best_flights = outbound_results.get('best_flights', [])
         
         for i, flight in enumerate(best_flights):
             flight_details = flight.get('flights', [])
             total_duration = flight.get('total_duration', 0)
             price = flight.get('price', 0)
+            departure_token = flight.get('departure_token', '')
             
             if not price:
                 continue
@@ -267,19 +268,11 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             dep_airport = first_segment.get('departure_airport', {})
             arr_airport = last_segment.get('arrival_airport', {})
             
-            dep_time = dep_airport.get('time', '') if dep_airport else ''
-            arr_time = arr_airport.get('time', '') if arr_airport else ''
-            
-            num_stops = len(flight_details) - 1 if flight_details else 0
-            
-            layovers = flight.get('layovers', [])
-            stops_airports = [layover.get('id', '') for layover in layovers]
-            
-            outbound_flights = []
+            outbound_segments = []
             for seg in flight_details:
                 seg_dep = seg.get('departure_airport', {})
                 seg_arr = seg.get('arrival_airport', {})
-                outbound_flights.append({
+                outbound_segments.append({
                     'flight_number': seg.get('flight_number', 'N/A'),
                     'airline': seg.get('airline', 'Unknown'),
                     'airline_logo': seg.get('airline_logo', ''),
@@ -291,47 +284,83 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
                     'duration': seg.get('duration', 0),
                 })
             
-            flight_number = first_segment.get('flight_number', 'N/A')
-            airline = first_segment.get('airline', 'Unknown')
-            airplane = first_segment.get('airplane', 'N/A')
-            airline_logo = first_segment.get('airline_logo', '')
+            layovers = flight.get('layovers', [])
             
-            flights.append({
+            flight_data = {
                 'id': i,
-                'flight_number': flight_number,
-                'airline': airline,
-                'airline_zh': airline,
-                'airline_logo': airline_logo,
-                'origin': dep_airport.get('id', origin),
-                'destination': arr_airport.get('id', destination),
-                'departure_time': dep_time,
-                'arrival_time': arr_time,
-                'duration': total_duration // 60 if total_duration else 0,
-                'duration_minutes': total_duration,
-                'stops': num_stops,
-                'stops_airports': stops_airports,
                 'price': price,
                 'cabin_class': cabin_class,
-                'aircraft': airplane,
-                'seats_available': random.randint(1, 20),
                 'type': flight.get('type', ''),
                 'carbon_emissions': flight.get('carbon_emissions', {}),
-                'layovers': layovers,
+                'total_duration': total_duration,
                 'extensions': flight.get('extensions', []),
-                'outbound_flights': outbound_flights,
-            })
+                'outbound_flights': outbound_segments,
+                'outbound_stops': len(flight_details) - 1 if flight_details else 0,
+                'outbound_layovers': layovers,
+                'departure_token': departure_token,
+            }
+            
+            if trip_type == 'round_trip' and return_date and departure_token:
+                return_params = {
+                    "engine": "google_flights",
+                    "departure_id": destination,
+                    "arrival_id": origin,
+                    "currency": "EUR",
+                    "type": "1",
+                    "outbound_date": return_date,
+                    "travel_class": travel_class_map.get(travel_class, "1"),
+                    "adults": str(adults),
+                    "departure_token": departure_token
+                }
+                
+                logger.info(f"Fetching return flights with token...")
+                
+                try:
+                    return_results = client.search(return_params)
+                    return_flights = return_results.get('best_flights', [])
+                    
+                    if return_flights and len(return_flights) > 0:
+                        ret_flight = return_flights[0]
+                        ret_details = ret_flight.get('flights', [])
+                        
+                        return_segments = []
+                        for seg in ret_details:
+                            seg_dep = seg.get('departure_airport', {})
+                            seg_arr = seg.get('arrival_airport', {})
+                            return_segments.append({
+                                'flight_number': seg.get('flight_number', 'N/A'),
+                                'airline': seg.get('airline', 'Unknown'),
+                                'airline_logo': seg.get('airline_logo', ''),
+                                'aircraft': seg.get('airplane', 'N/A'),
+                                'departure_airport': seg_dep.get('id', ''),
+                                'departure_time': seg_dep.get('time', ''),
+                                'arrival_airport': seg_arr.get('id', ''),
+                                'arrival_time': seg_arr.get('time', ''),
+                                'duration': seg.get('duration', 0),
+                            })
+                        
+                        flight_data['return_flights'] = return_segments
+                        flight_data['return_stops'] = len(ret_details) - 1 if ret_details else 0
+                        flight_data['return_layovers'] = ret_flight.get('layovers', [])
+                        flight_data['return_duration'] = ret_flight.get('total_duration', 0)
+                        flight_data['return_carbon_emissions'] = ret_flight.get('carbon_emissions', {})
+                        
+                except Exception as e:
+                    logger.error(f"Error fetching return flights: {e}")
+            
+            outbound_flights.append(flight_data)
         
         sort_options = {
             'best': lambda x: x['price'],
             'price': lambda x: x['price'],
-            'duration': lambda x: x['duration']
+            'duration': lambda x: x.get('total_duration', 0)
         }
-        flights.sort(key=sort_options.get(sort_by, lambda x: x['price']))
+        outbound_flights.sort(key=sort_options.get(sort_by, lambda x: x['price']))
         
-        return flights
+        return outbound_flights
         
     except Exception as e:
-        print(f"SerpAPI error: {e}")
+        logger.error(f"SerpAPI error: {e}")
         return None
 
 def search_flights_mock(origin, destination, departure_date, cabin_class):

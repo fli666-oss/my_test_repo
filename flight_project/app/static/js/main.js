@@ -53,23 +53,22 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (data.flights && data.flights.length > 0) {
                 resultsList.innerHTML = data.flights.map(flight => {
-                    const segments = (flight.outbound_flights || []).map(seg => {
+                    const outboundSegments = (flight.outbound_flights || []).map(seg => {
                         const hours = Math.floor(seg.duration / 60);
                         const mins = seg.duration % 60;
                         return `
-                        <div class="flight-segment">
-                            <div class="segment-route">
-                                <span class="segment-airline">
-                                    <img src="${seg.airline_logo || ''}" alt="${seg.airline}" class="segment-airline-logo" onerror="this.style.display='none'">
-                                    <span>${seg.airline}</span>
-                                    <span class="segment-flight-num">${seg.flight_number}</span>
-                                </span>
+                        <div class="flight-segment outbound">
+                            <div class="segment-header">
+                                <span class="segment-label">去程</span>
+                                <img src="${seg.airline_logo || ''}" alt="${seg.airline}" class="segment-airline-logo" onerror="this.style.display='none'">
+                                <span>${seg.airline}</span>
+                                <span class="segment-flight-num">${seg.flight_number}</span>
                             </div>
                             <div class="segment-details">
                                 <div class="segment-time">
-                                    <span class="seg-dep-time">${seg.departure_time}</span>
+                                    <span>${seg.departure_time}</span>
                                     <span class="seg-arrow">→</span>
-                                    <span class="seg-arr-time">${seg.arrival_time}</span>
+                                    <span>${seg.arrival_time}</span>
                                 </div>
                                 <div class="segment-airport">
                                     <span>${seg.departure_airport}</span>
@@ -80,6 +79,37 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         `;
                     }).join('');
+                    
+                    const returnSegments = (flight.return_flights || []).map(seg => {
+                        const hours = Math.floor(seg.duration / 60);
+                        const mins = seg.duration % 60;
+                        return `
+                        <div class="flight-segment return">
+                            <div class="segment-header">
+                                <span class="segment-label">返程</span>
+                                <img src="${seg.airline_logo || ''}" alt="${seg.airline}" class="segment-airline-logo" onerror="this.style.display='none'">
+                                <span>${seg.airline}</span>
+                                <span class="segment-flight-num">${seg.flight_number}</span>
+                            </div>
+                            <div class="segment-details">
+                                <div class="segment-time">
+                                    <span>${seg.departure_time}</span>
+                                    <span class="seg-arrow">→</span>
+                                    <span>${seg.arrival_time}</span>
+                                </div>
+                                <div class="segment-airport">
+                                    <span>${seg.departure_airport}</span>
+                                    <span>${seg.arrival_airport}</span>
+                                </div>
+                                <div class="segment-duration">${hours}h ${mins}min</div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('');
+                    
+                    const outboundDuration = flight.total_duration || 0;
+                    const returnDuration = flight.return_duration || 0;
+                    const totalDuration = outboundDuration + returnDuration;
                     
                     return `
                     <div class="flight-card">
@@ -92,12 +122,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                         <div class="flight-segments">
-                            ${segments}
+                            ${outboundSegments}
+                            ${returnSegments ? returnSegments : ''}
                         </div>
                         <div class="flight-summary">
-                            <span>⏱ 总计: ${flight.duration}h ${flight.duration_minutes % 60}min</span>
-                            <span>${flight.stops === 0 ? '✈️ 直飞' : `🔄 ${flight.stops}次中转: ${(flight.stops_airports || []).join(', ')}`}</span>
-                            ${flight.carbon_emissions ? `<span>🌍 ${Math.round(flight.carbon_emissions.this_flight / 1000)}kg CO2</span>` : ''}
+                            <span>⏱ 总计: ${Math.floor(totalDuration / 60)}h ${totalDuration % 60}min</span>
+                            <span>🛫 去程: ${flight.outbound_stops === 0 ? '直飞' : `${flight.outbound_stops}次中转`}</span>
+                            ${flight.return_flights ? `<span>🛬 返程: ${flight.return_stops === 0 ? '直飞' : `${flight.return_stops}次中转`}</span>` : ''}
                         </div>
                         ${flight.extensions && flight.extensions.length > 0 ? `
                         <div class="flight-extensions">
