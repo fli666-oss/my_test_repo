@@ -23,20 +23,18 @@ def search_flights():
     departure_date = data.get('departure_date')
     return_date = data.get('return_date')
     passengers = int(data.get('passengers', 1))
-    cabin_class = data.get('cabin_class', 'economy')
     
-    trip_type = int(data.get('type', 1))
-    travel_class = int(data.get('travel_class', 1))
-    adults = int(data.get('adults', 1))
-    sort_by = int(data.get('sort_by', 1))
-    stops = int(data.get('stops', 0))
-    max_duration = int(data.get('max_duration', 1500))
+    trip_type = data.get('type', 'round_trip')
+    travel_class = data.get('travel_class', 'economy')
+    adults = int(data.get('passengers', 1))
+    sort_by = data.get('sort_by', 'best')
+    stops = data.get('stops', 'any')
     
     travel_class_to_cabin = {
-        1: 'economy',
-        2: 'premium_economy',
-        3: 'business',
-        4: 'first'
+        'economy': 'economy',
+        'premium_economy': 'premium_economy',
+        'business': 'business',
+        'first': 'first'
     }
     cabin_class = travel_class_to_cabin.get(travel_class, 'economy')
     
@@ -45,12 +43,12 @@ def search_flights():
     else:
         return jsonify({'error': 'Missing departure_date'}), 400
     
-    if trip_type == 1 and not return_date:
+    if trip_type == 'round_trip' and not return_date:
         return jsonify({'error': 'return_date is required for round trip'}), 400
     
-    if trip_type == 1 and return_date:
+    if trip_type == 'round_trip' and return_date:
         return_date_obj = datetime.strptime(return_date, '%Y-%m-%d').date()
-    elif trip_type == 1:
+    elif trip_type == 'round_trip':
         return_date_obj = (departure_date_obj + timedelta(days=14))
         return_date = return_date_obj.isoformat()
     else:
@@ -73,7 +71,7 @@ def search_flights():
     flights = search_flights_serpapi(
         origin, destination, departure_date, return_date, 
         cabin_class, passengers, trip_type, travel_class, 
-        adults, sort_by, stops, max_duration
+        adults, sort_by, stops
     )
     
     if flights is None:
@@ -155,7 +153,7 @@ def get_airlines():
     airlines = Airline.query.all()
     return jsonify([{'code': a.code, 'name': a.name, 'name_cn': a.name_cn} for a in airlines])
 
-def search_flights_serpapi(origin, destination, outbound_date, return_date, cabin_class, passengers=1, trip_type=1, travel_class=1, adults=1, sort_by=1, stops=0, max_duration=1500):
+def search_flights_serpapi(origin, destination, outbound_date, return_date, cabin_class, passengers=1, trip_type='round_trip', travel_class='economy', adults=1, sort_by='best', stops='any'):
     from serpapi import Client
     
     if not SERPAPI_API_KEY:
@@ -163,10 +161,10 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
     
     try:
         travel_class_map = {
-            "economy": "1",
-            "premium_economy": "2",
-            "business": "3",
-            "first": "4"
+            "economy": 1,
+            "premium_economy": 2,
+            "business": 3,
+            "first": 4
         }
         
         trip_type_map = {
@@ -176,13 +174,13 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
         }
         
         sort_by_map = {
-            "best": "1",
-            "price": "2",
-            "duration": "3"
+            "best": 1,
+            "price": 2,
+            "duration": 3
         }
         
         stops_map = {
-            "any": None,
+            "any": 0,
             "direct": 1,
             "1_stop": 2,
             "2_stops": 3
