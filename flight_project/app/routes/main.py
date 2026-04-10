@@ -435,7 +435,7 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
         outbound_flights = []
         return_flights = outbound_results.get('best_flights', []) + outbound_results.get('other_flights', [])
         
-        for i, flight in enumerate(best_flights):
+        for i, flight in enumerate(return_flights):
             flight_details = flight.get('flights', [])
             total_duration = flight.get('total_duration', 0)
             price = flight.get('price', 0)
