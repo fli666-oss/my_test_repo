@@ -97,9 +97,116 @@ header h1 {
     padding: 20px;
     margin-bottom: 15px;
     display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: box-shadow 0.3s;
+}
+
+.flight-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.flight-header {
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: box-shadow 0.3s;
+}
+
+.flight-price {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.price-amount {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #e74c3c;
+}
+
+.price-amount .currency {
+    font-size: 0.6em;
+    color: #999;
+}
+
+.flight-type-tag {
+    font-size: 0.75em;
+    padding: 4px 10px;
+    background: #667eea;
+    color: white;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.flight-segments {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.flight-segment {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.segment-airline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+}
+
+.segment-airline-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.segment-flight-num {
+    color: #666;
+    font-size: 0.85em;
+}
+
+.segment-details {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.segment-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.segment-arrow {
+    color: #999;
+}
+
+.segment-airport {
+    display: flex;
+    gap: 15px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.segment-duration {
+    color: #888;
+    font-size: 0.85em;
+    min-width: 60px;
+}
+
+.flight-summary {
+    display: flex;
+    gap: 20px;
+    font-size: 0.9em;
+    color: #666;
 }
 
 .flight-card:hover {
@@ -133,6 +240,21 @@ header h1 {
     font-size: 0.75em;
     color: #667eea;
     font-weight: 500;
+}
+
+.flight-extensions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.extension-tag {
+    font-size: 0.7em;
+    padding: 3px 8px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 4px;
 }
 
 .flight-number {

@@ -1,0 +1,1178 @@
+{
+  "search_metadata": {
+    "id": "69d8bddcf6e926e6030bd442",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/kgQS0FU9aExn8XjVUmUv2Q/69d8bddcf6e926e6030bd442.json",
+    "created_at": "2026-04-10 09:07:40 UTC",
+    "processed_at": "2026-04-10 09:07:40 UTC",
+    "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=us&curr=EUR&tfs=CBwQAhoeEgoyMDI2LTA1LTAxagcIARIDUEVLcgcIARIDQ0RHGh4SCjIwMjYtMDUtMTVqBwgBEgNDREdyBwgBEgNQRUtAAUgBcAGYAQE&tfu=EgIIAQ",
+    "raw_html_file": "https://serpapi.com/searches/kgQS0FU9aExn8XjVUmUv2Q/69d8bddcf6e926e6030bd442.html",
+    "prettify_html_file": "https://serpapi.com/searches/kgQS0FU9aExn8XjVUmUv2Q/69d8bddcf6e926e6030bd442.prettify",
+    "total_time_taken": 1.14
+  },
+  "search_parameters": {
+    "engine": "google_flights",
+    "hl": "en",
+    "gl": "us",
+    "type": "1",
+    "departure_id": "PEK",
+    "arrival_id": "CDG",
+    "outbound_date": "2026-05-01",
+    "return_date": "2026-05-15",
+    "travel_class": 1,
+    "adults": 1,
+    "currency": "EUR",
+    "sort_by": "1"
+  },
+  "best_flights": [
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 23:05"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-02 05:55"
+          },
+          "duration": 770,
+          "airplane": "Boeing 787",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 201",
+          "ticket_also_sold_by": [
+            "China Eastern"
+          ],
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "Wi-Fi for a fee",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 438 kg"
+          ],
+          "overnight": true
+        }
+      ],
+      "total_duration": 770,
+      "carbon_emissions": {
+        "this_flight": 438000,
+        "typical_for_this_route": 610000,
+        "difference_percent": -28
+      },
+      "price": 1139,
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+      "extensions": [
+        "Checked baggage for a fee",
+        "Full refund for cancellations",
+        "Free change, possible fare difference",
+        "Bag and fare conditions depend on the return flight"
+      ],
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFZ1ZCUmpJd01Sb0xDTlQ1QmhBQ0dnTkZWVkk0SEhETWp3Zz0iLFtbIlBFSyIsIjIwMjYtMDUtMDEiLCJDREciLG51bGwsIkFGIiwiMjAxIl1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 21:15"
+          },
+          "arrival_airport": {
+            "name": "Chongqing Jiangbei International Airport",
+            "id": "CKG",
+            "time": "2026-05-02 00:15"
+          },
+          "duration": 180,
+          "airplane": "Boeing 737",
+          "airline": "Hainan",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/HU.png",
+          "travel_class": "Economy",
+          "flight_number": "HU 7367",
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 144 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Chongqing Jiangbei International Airport",
+            "id": "CKG",
+            "time": "2026-05-02 02:30"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-02 07:55"
+          },
+          "duration": 685,
+          "airplane": "Boeing 787",
+          "airline": "Hainan",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/HU.png",
+          "travel_class": "Economy",
+          "flight_number": "HU 717",
+          "legroom": "32 in",
+          "extensions": [
+            "Above average legroom (32 in)",
+            "Wi-Fi for a fee",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 483 kg"
+          ],
+          "overnight": true
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 135,
+          "name": "Chongqing Jiangbei International Airport",
+          "id": "CKG",
+          "overnight": true
+        }
+      ],
+      "total_duration": 1000,
+      "carbon_emissions": {
+        "this_flight": 628000,
+        "typical_for_this_route": 610000,
+        "difference_percent": 3
+      },
+      "price": 1149,
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/HU.png",
+      "extensions": [
+        "1 checked bag up to 23 kg included",
+        "Full refund for cancellations",
+        "Free change, possible fare difference",
+        "Bag and fare conditions depend on the return flight"
+      ],
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFZ3hJVlRjek5qZDhTRlUzTVRjYUN3anpnQWNRQWhvRFJWVlNPQnh3aDVnSSIsW1siUEVLIiwiMjAyNi0wNS0wMSIsIkNLRyIsbnVsbCwiSFUiLCI3MzY3Il0sWyJDS0ciLCIyMDI2LTA1LTAyIiwiQ0RHIixudWxsLCJIVSIsIjcxNyJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 10:55"
+          },
+          "arrival_airport": {
+            "name": "Amsterdam Airport Schiphol",
+            "id": "AMS",
+            "time": "2026-05-01 17:20"
+          },
+          "duration": 745,
+          "airplane": "Boeing 787",
+          "airline": "KLM",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+          "travel_class": "Economy",
+          "flight_number": "KL 898",
+          "ticket_also_sold_by": [
+            "Air France"
+          ],
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "Wi-Fi for a fee",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 440 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Amsterdam Airport Schiphol",
+            "id": "AMS",
+            "time": "2026-05-01 18:40"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-01 20:05"
+          },
+          "duration": 85,
+          "airplane": "Airbus A220-300 Passenger",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 1141",
+          "ticket_also_sold_by": [
+            "KLM"
+          ],
+          "legroom": "30 in",
+          "extensions": [
+            "Average legroom (30 in)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 60 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 80,
+          "name": "Amsterdam Airport Schiphol",
+          "id": "AMS"
+        }
+      ],
+      "total_duration": 910,
+      "carbon_emissions": {
+        "this_flight": 500000,
+        "typical_for_this_route": 610000,
+        "difference_percent": -18
+      },
+      "price": 1255,
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+      "extensions": [
+        "Checked baggage for a fee",
+        "Full refund for cancellations",
+        "Free change, possible fare difference",
+        "Bag and fare conditions depend on the return flight"
+      ],
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFZ3hMVERnNU9IeEJSakV4TkRFYUN3amwwd2NRQWhvRFJWVlNPQnh3OWZnSSIsW1siUEVLIiwiMjAyNi0wNS0wMSIsIkFNUyIsbnVsbCwiS0wiLCI4OTgiXSxbIkFNUyIsIjIwMjYtMDUtMDEiLCJDREciLG51bGwsIkFGIiwiMTE0MSJdXV0="
+    }
+  ],
+  "other_flights": [
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 00:40"
+          },
+          "arrival_airport": {
+            "name": "Dubai International Airport",
+            "id": "DXB",
+            "time": "2026-05-01 05:00"
+          },
+          "duration": 500,
+          "airplane": "Boeing 777",
+          "airline": "Emirates",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/EK.png",
+          "travel_class": "Premium Economy",
+          "flight_number": "EK 307",
+          "extensions": [
+            "Extra reclining seat",
+            "Wi-Fi for a fee",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 640 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Dubai International Airport",
+            "id": "DXB",
+            "time": "2026-05-01 08:20"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-01 13:35"
+          },
+          "duration": 435,
+          "airplane": "Airbus A380",
+          "airline": "Emirates",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/EK.png",
+          "travel_class": "Economy",
+          "flight_number": "EK 73",
+          "ticket_also_sold_by": [
+            "Icelandair"
+          ],
+          "legroom": "32 in",
+          "extensions": [
+            "Above average legroom (32 in)",
+            "Wi-Fi for a fee",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 370 kg"
+          ],
+          "often_delayed_by_over_30_min": true
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 200,
+          "name": "Dubai International Airport",
+          "id": "DXB"
+        }
+      ],
+      "total_duration": 1135,
+      "carbon_emissions": {
+        "this_flight": 1011000,
+        "typical_for_this_route": 610000,
+        "difference_percent": 66
+      },
+      "price": 1393,
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/EK.png",
+      "extensions": [
+        "1 checked bag up to 25 kg included",
+        "Full refund for cancellations",
+        "Free change, possible fare difference",
+        "Bag and fare conditions depend on the return flight"
+      ],
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFZ3BGU3pNd04zeEZTemN6R2dzSWc4QUlFQUlhQTBWVlVqZ2NjTEwzQ1E9PSIsW1siUEVLIiwiMjAyNi0wNS0wMSIsIkRYQiIsbnVsbCwiRUsiLCIzMDciXSxbIkRYQiIsIjIwMjYtMDUtMDEiLCJDREciLG51bGwsIkVLIiwiNzMiXV1d"
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 02:50"
+          },
+          "arrival_airport": {
+            "name": "Václav Havel Airport Prague",
+            "id": "PRG",
+            "time": "2026-05-01 06:45"
+          },
+          "duration": 595,
+          "airplane": "Airbus A330",
+          "airline": "Hainan",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/HU.png",
+          "travel_class": "Economy",
+          "flight_number": "HU 7937",
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 490 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Václav Havel Airport Prague",
+            "id": "PRG",
+            "time": "2026-05-01 12:20"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-01 14:15"
+          },
+          "duration": 115,
+          "airplane": "Airbus A220-300 Passenger",
+          "airline": "Smartwings",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/QS.png",
+          "travel_class": "Economy",
+          "flight_number": "QS 1034",
+          "legroom": "30 in",
+          "extensions": [
+            "Average legroom (30 in)",
+            "In-seat USB outlet",
+            "Stream media to your device",
+            "Carbon emissions estimate: 95 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 335,
+          "name": "Václav Havel Airport Prague",
+          "id": "PRG"
+        }
+      ],
+      "total_duration": 1045,
+      "carbon_emissions": {
+        "this_flight": 586000,
+        "typical_for_this_route": 610000,
+        "difference_percent": -4
+      },
+      "price": 1408,
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+      "extensions": [
+        "1 checked bag up to 23 kg included",
+        "Full refund for cancellations",
+        "Free change, possible fare difference",
+        "Bag and fare conditions depend on the return flight"
+      ],
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFZzFJVlRjNU16ZDhVVk14TURNMEdnc0krOHNJRUFJYUEwVlZVamdjY0t5RkNnPT0iLFtbIlBFSyIsIjIwMjYtMDUtMDEiLCJQUkciLG51bGwsIkhVIiwiNzkzNyJdLFsiUFJHIiwiMjAyNi0wNS0wMSIsIkNERyIsbnVsbCwiUVMiLCIxMDM0Il1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 02:30"
+          },
+          "arrival_airport": {
+            "name": "Frankfurt Airport",
+            "id": "FRA",
+            "time": "2026-05-01 06:50"
+          },
+          "duration": 620,
+          "airplane": "Boeing 747",
+          "airline": "Air China",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/CA.png",
+          "travel_class": "Premium Economy",
+          "flight_number": "CA 965",
+          "ticket_also_sold_by": [
+            "Lufthansa"
+          ],
+          "legroom": "38 in",
+          "extensions": [
+            "Above average legroom (38 in)",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 878 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Frankfurt Airport",
+            "id": "FRA",
+            "time": "2026-05-01 16:40"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-01 17:55"
+          },
+          "duration": 75,
+          "airplane": "Airbus A320neo",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 1040",
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 55 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 590,
+          "name": "Frankfurt Airport",
+          "id": "FRA"
+        }
+      ],
+      "total_duration": 1285,
+      "carbon_emissions": {
+        "this_flight": 934000,
+        "typical_for_this_route": 610000,
+        "difference_percent": 53
+      },
+      "price": 1650,
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+      "extensions": [
+        "1 checked bag up to 23 kg included",
+        "Full refund for cancellations",
+        "Free change, possible fare difference",
+        "Bag and fare conditions depend on the return flight"
+      ],
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFZ3hEUVRrMk5YeE1TREV3TkRBYUN3aTVpQW9RQWhvRFJWVlNPQnh3ek9FTCIsW1siUEVLIiwiMjAyNi0wNS0wMSIsIkZSQSIsbnVsbCwiQ0EiLCI5NjUiXSxbIkZSQSIsIjIwMjYtMDUtMDEiLCJDREciLG51bGwsIkxIIiwiMTA0MCJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 02:30"
+          },
+          "arrival_airport": {
+            "name": "Frankfurt Airport",
+            "id": "FRA",
+            "time": "2026-05-01 06:50"
+          },
+          "duration": 620,
+          "airplane": "Boeing 747",
+          "airline": "Air China",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/CA.png",
+          "travel_class": "Premium Economy",
+          "flight_number": "CA 965",
+          "ticket_also_sold_by": [
+            "Lufthansa"
+          ],
+          "legroom": "38 in",
+          "extensions": [
+            "Above average legroom (38 in)",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 878 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Frankfurt Airport",
+            "id": "FRA",
+            "time": "2026-05-01 09:45"
+          },
+          "arrival_airport": {
+            "name": "Munich International Airport",
+            "id": "MUC",
+            "time": "2026-05-01 10:40"
+          },
+          "duration": 55,
+          "airplane": "Airbus A321",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 100",
+          "legroom": "30 in",
+          "extensions": [
+            "Average legroom (30 in)",
+            "Wi-Fi for a fee",
+            "Carbon emissions estimate: 55 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Munich International Airport",
+            "id": "MUC",
+            "time": "2026-05-01 12:05"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-01 13:40"
+          },
+          "duration": 95,
+          "airplane": "Airbus A320neo",
+          "airline": "Lufthansa City Airlines",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/VL.png",
+          "travel_class": "Economy",
+          "flight_number": "VL 2230",
+          "ticket_also_sold_by": [
+            "Lufthansa"
+          ],
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 70 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 175,
+          "name": "Frankfurt Airport",
+          "id": "FRA"
+        },
+        {
+          "duration": 85,
+          "name": "Munich International Airport",
+          "id": "MUC"
+        }
+      ],
+      "total_duration": 1030,
+      "carbon_emissions": {
+        "this_flight": 1006000,
+        "typical_for_this_route": 610000,
+        "difference_percent": 65
+      },
+      "price": 1687,
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+      "extensions": [
+        "1 checked bag up to 23 kg included",
+        "Full refund for cancellations",
+        "Free change, possible fare difference",
+        "Bag and fare conditions depend on the return flight"
+      ],
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFaEpEUVRrMk5YeE1TREV3TUh4V1RESXlNekFhQ3dpYnBRb1FBaG9EUlZWU09CeHdtNE1NIixbWyJQRUsiLCIyMDI2LTA1LTAxIiwiRlJBIixudWxsLCJDQSIsIjk2NSJdLFsiRlJBIiwiMjAyNi0wNS0wMSIsIk1VQyIsbnVsbCwiTEgiLCIxMDAiXSxbIk1VQyIsIjIwMjYtMDUtMDEiLCJDREciLG51bGwsIlZMIiwiMjIzMCJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 02:30"
+          },
+          "arrival_airport": {
+            "name": "Frankfurt Airport",
+            "id": "FRA",
+            "time": "2026-05-01 06:50"
+          },
+          "duration": 620,
+          "airplane": "Boeing 747",
+          "airline": "Air China",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/CA.png",
+          "travel_class": "Premium Economy",
+          "flight_number": "CA 965",
+          "ticket_also_sold_by": [
+            "Lufthansa"
+          ],
+          "legroom": "38 in",
+          "extensions": [
+            "Above average legroom (38 in)",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 878 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Frankfurt Airport",
+            "id": "FRA",
+            "time": "2026-05-01 09:15"
+          },
+          "arrival_airport": {
+            "name": "Munich International Airport",
+            "id": "MUC",
+            "time": "2026-05-01 10:10"
+          },
+          "duration": 55,
+          "airplane": "Airbus A319",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 98",
+          "legroom": "30 in",
+          "extensions": [
+            "Average legroom (30 in)",
+            "Wi-Fi for a fee",
+            "Carbon emissions estimate: 59 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Munich International Airport",
+            "id": "MUC",
+            "time": "2026-05-01 12:05"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-01 13:40"
+          },
+          "duration": 95,
+          "airplane": "Airbus A320neo",
+          "airline": "Lufthansa City Airlines",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/VL.png",
+          "travel_class": "Economy",
+          "flight_number": "VL 2230",
+          "ticket_also_sold_by": [
+            "Lufthansa"
+          ],
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 70 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 145,
+          "name": "Frankfurt Airport",
+          "id": "FRA"
+        },
+        {
+          "duration": 115,
+          "name": "Munich International Airport",
+          "id": "MUC"
+        }
+      ],
+      "total_duration": 1030,
+      "carbon_emissions": {
+        "this_flight": 1010000,
+        "typical_for_this_route": 610000,
+        "difference_percent": 66
+      },
+      "price": 1687,
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+      "extensions": [
+        "1 checked bag up to 23 kg included",
+        "Full refund for cancellations",
+        "Free change, possible fare difference",
+        "Bag and fare conditions depend on the return flight"
+      ],
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFaEZEUVRrMk5YeE1TRGs0ZkZaTU1qSXpNQm9MQ0p1bENoQUNHZ05GVlZJNEhIQ2Jnd3c9IixbWyJQRUsiLCIyMDI2LTA1LTAxIiwiRlJBIixudWxsLCJDQSIsIjk2NSJdLFsiRlJBIiwiMjAyNi0wNS0wMSIsIk1VQyIsbnVsbCwiTEgiLCI5OCJdLFsiTVVDIiwiMjAyNi0wNS0wMSIsIkNERyIsbnVsbCwiVkwiLCIyMjMwIl1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 13:25"
+          },
+          "arrival_airport": {
+            "name": "Munich International Airport",
+            "id": "MUC",
+            "time": "2026-05-01 19:15"
+          },
+          "duration": 710,
+          "airplane": "Airbus A350",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 723",
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "Wi-Fi for a fee",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 444 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Munich International Airport",
+            "id": "MUC",
+            "time": "2026-05-01 22:00"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-01 23:35"
+          },
+          "duration": 95,
+          "airplane": "Airbus A320neo",
+          "airline": "Lufthansa City Airlines",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/VL.png",
+          "travel_class": "Economy",
+          "flight_number": "VL 2238",
+          "ticket_also_sold_by": [
+            "Lufthansa"
+          ],
+          "legroom": "29 in",
+          "extensions": [
+            "Below average legroom (29 in)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 70 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 165,
+          "name": "Munich International Airport",
+          "id": "MUC"
+        }
+      ],
+      "total_duration": 970,
+      "carbon_emissions": {
+        "this_flight": 516000,
+        "typical_for_this_route": 610000,
+        "difference_percent": -15
+      },
+      "price": 1888,
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+      "extensions": [
+        "1 checked bag up to 23 kg included",
+        "Full refund for cancellations",
+        "Free change, possible fare difference",
+        "Bag and fare conditions depend on the return flight"
+      ],
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFZ3hNU0RjeU0zeFdUREl5TXpnYUN3aXd3Z3NRQWhvRFJWVlNPQnh3N3JvTiIsW1siUEVLIiwiMjAyNi0wNS0wMSIsIk1VQyIsbnVsbCwiTEgiLCI3MjMiXSxbIk1VQyIsIjIwMjYtMDUtMDEiLCJDREciLG51bGwsIlZMIiwiMjIzOCJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 02:00"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-01 06:45"
+          },
+          "duration": 645,
+          "airplane": "Boeing 777",
+          "airline": "Air China",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/CA.png",
+          "travel_class": "Economy",
+          "flight_number": "CA 875",
+          "legroom": "32 in",
+          "extensions": [
+            "Above average legroom (32 in)",
+            "In-seat power outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 580 kg"
+          ],
+          "overnight": true
+        }
+      ],
+      "total_duration": 645,
+      "carbon_emissions": {
+        "this_flight": 580000,
+        "typical_for_this_route": 610000,
+        "difference_percent": -5
+      },
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/CA.png",
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFZ1ZEUVRnM05UZ2MiLFtbIlBFSyIsIjIwMjYtMDUtMDEiLCJDREciLG51bGwsIkNBIiwiODc1Il1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Beijing Capital International Airport",
+            "id": "PEK",
+            "time": "2026-05-01 13:30"
+          },
+          "arrival_airport": {
+            "name": "Paris Charles de Gaulle Airport",
+            "id": "CDG",
+            "time": "2026-05-01 18:15"
+          },
+          "duration": 645,
+          "airplane": "Boeing 777",
+          "airline": "Air China",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/CA.png",
+          "travel_class": "Economy",
+          "flight_number": "CA 933",
+          "legroom": "31 in",
+          "extensions": [
+            "Average legroom (31 in)",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 610 kg"
+          ]
+        }
+      ],
+      "total_duration": 645,
+      "carbon_emissions": {
+        "this_flight": 611000,
+        "typical_for_this_route": 610000,
+        "difference_percent": 0
+      },
+      "type": "Round trip",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/CA.png",
+      "departure_token": "WyJDalJJTjFGb2VuUkNPWFZ4U25OQlFuSXpWR2RDUnkwdExTMHRMUzB0Y0daaVpXazBOVUZCUVVGQlIyNVpkbVF3UzNsTldGRkJFZ1ZEUVRrek16Z2MiLFtbIlBFSyIsIjIwMjYtMDUtMDEiLCJDREciLG51bGwsIkNBIiwiOTMzIl1dXQ=="
+    }
+  ],
+  "price_insights": {
+    "lowest_price": 1139,
+    "price_level": "high",
+    "typical_price_range": [
+      580,
+      810
+    ],
+    "price_history": [
+      [
+        1770566400,
+        782
+      ],
+      [
+        1770652800,
+        781
+      ],
+      [
+        1770739200,
+        778
+      ],
+      [
+        1770825600,
+        781
+      ],
+      [
+        1770912000,
+        781
+      ],
+      [
+        1770998400,
+        783
+      ],
+      [
+        1771084800,
+        782
+      ],
+      [
+        1771171200,
+        782
+      ],
+      [
+        1771257600,
+        782
+      ],
+      [
+        1771344000,
+        783
+      ],
+      [
+        1771430400,
+        783
+      ],
+      [
+        1771516800,
+        787
+      ],
+      [
+        1771603200,
+        702
+      ],
+      [
+        1771689600,
+        701
+      ],
+      [
+        1771776000,
+        701
+      ],
+      [
+        1771862400,
+        698
+      ],
+      [
+        1771948800,
+        700
+      ],
+      [
+        1772035200,
+        704
+      ],
+      [
+        1772121600,
+        794
+      ],
+      [
+        1772208000,
+        797
+      ],
+      [
+        1772294400,
+        794
+      ],
+      [
+        1772380800,
+        958
+      ],
+      [
+        1772467200,
+        963
+      ],
+      [
+        1772553600,
+        965
+      ],
+      [
+        1772640000,
+        970
+      ],
+      [
+        1772726400,
+        969
+      ],
+      [
+        1772812800,
+        971
+      ],
+      [
+        1772899200,
+        970
+      ],
+      [
+        1772985600,
+        970
+      ],
+      [
+        1773072000,
+        976
+      ],
+      [
+        1773158400,
+        968
+      ],
+      [
+        1773244800,
+        973
+      ],
+      [
+        1773331200,
+        979
+      ],
+      [
+        1773417600,
+        893
+      ],
+      [
+        1773504000,
+        894
+      ],
+      [
+        1773590400,
+        894
+      ],
+      [
+        1773676800,
+        896
+      ],
+      [
+        1773763200,
+        884
+      ],
+      [
+        1773849600,
+        891
+      ],
+      [
+        1773936000,
+        1046
+      ],
+      [
+        1774022400,
+        1039
+      ],
+      [
+        1774108800,
+        1038
+      ],
+      [
+        1774195200,
+        1038
+      ],
+      [
+        1774281600,
+        1039
+      ],
+      [
+        1774368000,
+        1040
+      ],
+      [
+        1774454400,
+        1039
+      ],
+      [
+        1774540800,
+        1040
+      ],
+      [
+        1774627200,
+        956
+      ],
+      [
+        1774713600,
+        1039
+      ],
+      [
+        1774800000,
+        1039
+      ],
+      [
+        1774886400,
+        1104
+      ],
+      [
+        1774972800,
+        1101
+      ],
+      [
+        1775059200,
+        1141
+      ],
+      [
+        1775145600,
+        1171
+      ],
+      [
+        1775232000,
+        1171
+      ],
+      [
+        1775318400,
+        1171
+      ],
+      [
+        1775404800,
+        1111
+      ],
+      [
+        1775491200,
+        1109
+      ],
+      [
+        1775577600,
+        1155
+      ],
+      [
+        1775664000,
+        1144
+      ],
+      [
+        1775750400,
+        1139
+      ]
+    ]
+  },
+  "airports": [
+    {
+      "departure": [
+        {
+          "airport": {
+            "id": "PEK",
+            "name": "Beijing Capital International Airport"
+          },
+          "city": "Beijing",
+          "country": "China",
+          "country_code": "CN",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ9v_tNYxaummsU2qbFn8zuYzkcG0x6qCvqB2gbBnx-2FVlZZPsnkvUXGk07vxotk-0vRQMUYCjj2d4Wg",
+          "thumbnail": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSzsj_yw6o3vb8i54_D21VgI5rTohxexQkZ0TrZKDKJwTSKw2yqnRYLoIcBWIY50BlHo-OPMm68zbUO-qnFvmQmm6jvtWPwo7WOzjNGX_A"
+        }
+      ],
+      "arrival": [
+        {
+          "airport": {
+            "id": "CDG",
+            "name": "Paris Charles de Gaulle Airport"
+          },
+          "city": "Paris",
+          "country": "France",
+          "country_code": "FR",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQGx8ii2KbSDdbdzfKye5oDN2bwBA6audqI7XUEf2iMRZezpn_ZbQe1ZIuvUSH-8XOMe958umDwSsAF1w",
+          "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSyQJ-woNs0iO22mPSkmRUM5gcsTbbYeypQ6BBTeFxXr90mqTxZl57Fdq2CDuLn4w7cKZ8TT9_zZhOpF57rIpA7yWKQnqKvkKIf9Y-qJDo"
+        }
+      ]
+    },
+    {
+      "departure": [
+        {
+          "airport": {
+            "id": "CDG",
+            "name": "Paris Charles de Gaulle Airport"
+          },
+          "city": "Paris",
+          "country": "France",
+          "country_code": "FR",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQGx8ii2KbSDdbdzfKye5oDN2bwBA6audqI7XUEf2iMRZezpn_ZbQe1ZIuvUSH-8XOMe958umDwSsAF1w",
+          "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSyQJ-woNs0iO22mPSkmRUM5gcsTbbYeypQ6BBTeFxXr90mqTxZl57Fdq2CDuLn4w7cKZ8TT9_zZhOpF57rIpA7yWKQnqKvkKIf9Y-qJDo"
+        }
+      ],
+      "arrival": [
+        {
+          "airport": {
+            "id": "PEK",
+            "name": "Beijing Capital International Airport"
+          },
+          "city": "Beijing",
+          "country": "China",
+          "country_code": "CN",
+          "image": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ9v_tNYxaummsU2qbFn8zuYzkcG0x6qCvqB2gbBnx-2FVlZZPsnkvUXGk07vxotk-0vRQMUYCjj2d4Wg",
+          "thumbnail": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSzsj_yw6o3vb8i54_D21VgI5rTohxexQkZ0TrZKDKJwTSKw2yqnRYLoIcBWIY50BlHo-OPMm68zbUO-qnFvmQmm6jvtWPwo7WOzjNGX_A"
+        }
+      ]
+    }
+  ]
+}

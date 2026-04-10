@@ -53,41 +53,57 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (data.flights && data.flights.length > 0) {
                 resultsList.innerHTML = data.flights.map(flight => {
-                    const airlineCode = (flight.flight_number || '').split(' ')[0].substring(0, 2);
-                    const airlineLogo = `https://www.gstatic.com/flights/airline_logos/70px/${airlineCode}.png`;
+                    const segments = (flight.outbound_flights || []).map(seg => {
+                        const hours = Math.floor(seg.duration / 60);
+                        const mins = seg.duration % 60;
+                        return `
+                        <div class="flight-segment">
+                            <div class="segment-route">
+                                <span class="segment-airline">
+                                    <img src="${seg.airline_logo || ''}" alt="${seg.airline}" class="segment-airline-logo" onerror="this.style.display='none'">
+                                    <span>${seg.airline}</span>
+                                    <span class="segment-flight-num">${seg.flight_number}</span>
+                                </span>
+                            </div>
+                            <div class="segment-details">
+                                <div class="segment-time">
+                                    <span class="seg-dep-time">${seg.departure_time}</span>
+                                    <span class="seg-arrow">→</span>
+                                    <span class="seg-arr-time">${seg.arrival_time}</span>
+                                </div>
+                                <div class="segment-airport">
+                                    <span>${seg.departure_airport}</span>
+                                    <span>${seg.arrival_airport}</span>
+                                </div>
+                                <div class="segment-duration">${hours}h ${mins}min</div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('');
+                    
                     return `
                     <div class="flight-card">
-                        <div class="flight-info">
-                            <div class="flight-route">
-                                <img src="${airlineLogo}" alt="${flight.airline}" class="airline-logo" onerror="this.style.display='none'">
-                                <div class="flight-route-info">
-                                    <span class="flight-number">${flight.flight_number}</span>
-                                    <span>${flight.airline_zh || flight.airline}</span>
-                                    <span class="flight-type">${flight.type || ''}</span>
-                                </div>
+                        <div class="flight-header">
+                            <div class="flight-price">
+                                <span class="price-amount">
+                                    <span class="currency">€</span>${flight.price}
+                                </span>
+                                <span class="flight-type-tag">${flight.type || ''}</span>
                             </div>
-                            <div class="stops-info">
-                                ${flight.stops === 0 ? '✈️ 直飞' : `🔄 ${flight.stops}次中转: ${(flight.stops_airports || []).join(', ')}`}
-                            </div>
-                            <div class="flight-details">
-                                <span>🛫 ${flight.departure_time}</span>
-                                <span>🛬 ${flight.arrival_time}</span>
-                                <span>⏱ ${flight.duration}小时</span>
-                                <span>✈️ ${flight.aircraft || 'N/A'}</span>
-                            </div>
-                            ${flight.carbon_emissions ? `
-                            <div class="carbon-info">
-                                <span>🌍 碳排放: ${flight.carbon_emissions.this_flight || 0}g</span>
-                                <span>(典型: ${flight.carbon_emissions.typical_for_this_route || 0}g)</span>
-                            </div>
-                            ` : ''}
                         </div>
-                        <div class="flight-price">
-                            <div class="price-amount">
-                                <span class="currency">€</span>${flight.price}
-                            </div>
-                            <div class="seats-info">💺 剩余 ${flight.seats_available} 座</div>
+                        <div class="flight-segments">
+                            ${segments}
                         </div>
+                        <div class="flight-summary">
+                            <span>⏱ 总计: ${flight.duration}h ${flight.duration_minutes % 60}min</span>
+                            <span>${flight.stops === 0 ? '✈️ 直飞' : `🔄 ${flight.stops}次中转: ${(flight.stops_airports || []).join(', ')}`}</span>
+                            ${flight.carbon_emissions ? `<span>🌍 ${Math.round(flight.carbon_emissions.this_flight / 1000)}kg CO2</span>` : ''}
+                        </div>
+                        ${flight.extensions && flight.extensions.length > 0 ? `
+                        <div class="flight-extensions">
+                            ${flight.extensions.slice(0, 2).map(ext => `<span class="extension-tag">${ext}</span>`).join('')}
+                        </div>
+                        ` : ''}
                     </div>
                 `}).join('');
                 

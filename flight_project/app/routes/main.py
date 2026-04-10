@@ -252,11 +252,8 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
         
         flights = []
         best_flights = results.get('best_flights', [])
-        other_flights = results.get('other_flights', [])
         
-        all_flights = best_flights + other_flights
-        
-        for i, flight in enumerate(all_flights):
+        for i, flight in enumerate(best_flights):
             flight_details = flight.get('flights', [])
             total_duration = flight.get('total_duration', 0)
             price = flight.get('price', 0)
@@ -278,20 +275,39 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             layovers = flight.get('layovers', [])
             stops_airports = [layover.get('id', '') for layover in layovers]
             
+            outbound_flights = []
+            for seg in flight_details:
+                seg_dep = seg.get('departure_airport', {})
+                seg_arr = seg.get('arrival_airport', {})
+                outbound_flights.append({
+                    'flight_number': seg.get('flight_number', 'N/A'),
+                    'airline': seg.get('airline', 'Unknown'),
+                    'airline_logo': seg.get('airline_logo', ''),
+                    'aircraft': seg.get('airplane', 'N/A'),
+                    'departure_airport': seg_dep.get('id', ''),
+                    'departure_time': seg_dep.get('time', ''),
+                    'arrival_airport': seg_arr.get('id', ''),
+                    'arrival_time': seg_arr.get('time', ''),
+                    'duration': seg.get('duration', 0),
+                })
+            
             flight_number = first_segment.get('flight_number', 'N/A')
             airline = first_segment.get('airline', 'Unknown')
             airplane = first_segment.get('airplane', 'N/A')
+            airline_logo = first_segment.get('airline_logo', '')
             
             flights.append({
                 'id': i,
                 'flight_number': flight_number,
                 'airline': airline,
                 'airline_zh': airline,
+                'airline_logo': airline_logo,
                 'origin': dep_airport.get('id', origin),
                 'destination': arr_airport.get('id', destination),
                 'departure_time': dep_time,
                 'arrival_time': arr_time,
                 'duration': total_duration // 60 if total_duration else 0,
+                'duration_minutes': total_duration,
                 'stops': num_stops,
                 'stops_airports': stops_airports,
                 'price': price,
@@ -300,6 +316,9 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
                 'seats_available': random.randint(1, 20),
                 'type': flight.get('type', ''),
                 'carbon_emissions': flight.get('carbon_emissions', {}),
+                'layovers': layovers,
+                'extensions': flight.get('extensions', []),
+                'outbound_flights': outbound_flights,
             })
         
         sort_options = {
