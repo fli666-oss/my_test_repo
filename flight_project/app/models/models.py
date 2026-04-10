@@ -46,6 +46,31 @@ class SearchHistory(db.Model):
     cabin_class = db.Column(db.String(20), default='economy')
     search_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+class PriceInsight(db.Model):
+    __tablename__ = 'price_insights'
+    id = db.Column(db.Integer, primary_key=True)
+    origin = db.Column(db.String(10), nullable=False)
+    destination = db.Column(db.String(10), nullable=False)
+    departure_date = db.Column(db.Date, nullable=False)
+    return_date = db.Column(db.Date)
+    cabin_class = db.Column(db.String(20), default='economy')
+    search_date = db.Column(db.DateTime, default=datetime.utcnow)
+    lowest_price = db.Column(db.Float, nullable=False)
+    price_level = db.Column(db.String(20))
+    typical_price_low = db.Column(db.Float)
+    typical_price_high = db.Column(db.Float)
+    price_history = db.Column(db.Text)
+    
+    def set_price_history(self, history_list):
+        import json
+        self.price_history = json.dumps(history_list)
+    
+    def get_price_history(self):
+        import json
+        if self.price_history:
+            return json.loads(self.price_history)
+        return []
+
 def init_db(app):
     db.init_app(app)
     return db

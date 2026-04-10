@@ -91,17 +91,17 @@ def create_api_spec():
                                     "type": "object",
                                     "required": ["api_key", "departure_id", "arrival_id", "outbound_date"],
                                     "properties": {
-                                        "api_key": {"type": "string", "example": "your_api_key"},
-                                        "engine": {"type": "string", "default": "google_flights"},
-                                        "departure_id": {"type": "string", "example": "PEK"},
-                                        "arrival_id": {"type": "string", "example": "CDG"},
-                                        "outbound_date": {"type": "string", "example": "2026-04-24"},
-                                        "return_date": {"type": "string", "example": "2026-04-30"},
-                                        "travel_class": {"type": "string", "default": "1"},
-                                        "type": {"type": "string", "default": "1"},
-                                        "adults": {"type": "string", "default": "1"},
-                                        "sort_by": {"type": "string", "default": "1"},
-                                        "departure_token": {"type": "string"},
+                                          "api_key": {"type": "string", "example": "3a9aaedb965e62e9bbc50abf516f4bfbf1b84f3c3eb41db3b7b1062336f28d28"},
+                                          "engine": {"type": "string", "default": "google_flights"},
+                                          "departure_id": {"type": "string", "example": "PEK"},
+                                          "arrival_id": {"type": "string", "example": "CDG"},
+                                          "outbound_date": {"type": "string", "example": "2026-04-24"},
+                                          "return_date": {"type": "string", "example": "2026-04-30"},
+                                          "travel_class": {"type": "string", "default": "1"},
+                                          "type": {"type": "string", "default": "1"},
+                                          "adults": {"type": "string", "default": "1"},
+                                          "sort_by": {"type": "string", "default": "1"},
+                                          "departure_token": {"type": "string"},
                                     }
                                 }
                             }

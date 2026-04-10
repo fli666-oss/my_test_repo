@@ -25,6 +25,10 @@ SERPAPI_API_KEY = os.environ.get('SERPAPI_API_KEY', '')
 def index():
     return render_template('index.html')
 
+@main_bp.route('/price-insights')
+def price_insights_page():
+    return render_template('price_insights.html')
+
 @main_bp.route('/search', methods=['POST'])
 def search_flights():
     """
@@ -366,6 +370,177 @@ def price_history():
     
     price_history = generate_price_history(origin, destination, departure_date)
     return jsonify(price_history)
+
+@main_bp.route('/search-price-insights', methods=['POST'])
+def search_price_insights():
+    """
+    Search flights with price insights
+    ---
+    tags:
+      - Flights
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - api_key
+            - departure_id
+            - arrival_id
+            - outbound_date
+          properties:
+            api_key:
+              type: string
+              example: "your_api_key"
+            departure_id:
+              type: string
+              example: "CDG"
+            arrival_id:
+              type: string
+              example: "PEK"
+            outbound_date:
+              type: string
+              example: "2026-10-16"
+            return_date:
+              type: string
+              example: "2026-10-31"
+            travel_class:
+              type: string
+              default: "1"
+            type:
+              type: string
+              default: "1"
+            adults:
+              type: string
+              default: "1"
+            sort_by:
+              type: string
+              default: "1"
+    responses:
+      200:
+        description: Flight search results with price insights
+      400:
+        description: Missing required parameters
+      500:
+        description: API error
+    """
+    from serpapi import Client
+    from app.models.models import db, PriceInsight
+    
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({'error': 'No JSON data provided'}), 400
+    
+    api_key = data.get('api_key')
+    if not api_key:
+        return jsonify({'error': 'api_key is required'}), 400
+    
+    departure_id = data.get('departure_id')
+    arrival_id = data.get('arrival_id')
+    outbound_date = data.get('outbound_date')
+    
+    if not departure_id or not arrival_id or not outbound_date:
+        return jsonify({'error': 'departure_id, arrival_id, and outbound_date are required'}), 400
+    
+    params = {
+        "engine": data.get('engine', 'google_flights'),
+        "departure_id": departure_id,
+        "arrival_id": arrival_id,
+        "outbound_date": outbound_date,
+    }
+    
+    optional_fields = ['return_date', 'travel_class', 'type', 'adults', 'sort_by']
+    for field in optional_fields:
+        if data.get(field):
+            params[field] = data[field]
+    
+    logger.info(f"Price insights request: {json.dumps(params, ensure_ascii=False)}")
+    
+    try:
+        client = Client(api_key=api_key)
+        results = client.search(params)
+        results_dict = dict(results)
+        
+        logger.info(f"Response keys: {list(results_dict.keys())}")
+        
+        price_insights = results_dict.get('price_insights', {})
+        
+        if price_insights:
+            return_date = data.get('return_date')
+            travel_class = data.get('travel_class', '1')
+            
+            insight = PriceInsight(
+                origin=departure_id,
+                destination=arrival_id,
+                departure_date=datetime.strptime(outbound_date, '%Y-%m-%d').date(),
+                return_date=datetime.strptime(return_date, '%Y-%m-%d').date() if return_date else None,
+                cabin_class=travel_class,
+                lowest_price=price_insights.get('lowest_price', 0),
+                price_level=price_insights.get('price_level', ''),
+                typical_price_low=price_insights.get('typical_price_range', [0, 0])[0] if price_insights.get('typical_price_range') else None,
+                typical_price_high=price_insights.get('typical_price_range', [0, 0])[1] if price_insights.get('typical_price_range') else None
+            )
+            insight.set_price_history(price_insights.get('price_history', []))
+            
+            db.session.add(insight)
+            db.session.commit()
+            
+            logger.info(f"Price insights saved to database: {departure_id} -> {arrival_id}")
+        
+        return jsonify(results_dict)
+    
+    except Exception as e:
+        logger.error(f"SerpAPI error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@main_bp.route('/price-insights-chart')
+def price_insights_chart():
+    """
+    Get price insights data for chart display
+    ---
+    tags:
+      - Flights
+    parameters:
+      - name: origin
+        in: query
+        type: string
+        default: "CDG"
+      - name: destination
+        in: query
+        type: string
+        default: "PEK"
+    responses:
+      200:
+        description: Chart data
+    """
+    from app.models.models import db, PriceInsight
+    
+    origin = request.args.get('origin', 'CDG')
+    destination = request.args.get('destination', 'PEK')
+    
+    insights = PriceInsight.query.filter(
+        PriceInsight.origin == origin,
+        PriceInsight.destination == destination
+    ).order_by(PriceInsight.search_date.desc()).all()
+    
+    chart_data = []
+    for insight in insights:
+        history = insight.get_price_history()
+        chart_data.append({
+            'id': insight.id,
+            'departure_date': insight.departure_date.isoformat() if insight.departure_date else None,
+            'return_date': insight.return_date.isoformat() if insight.return_date else None,
+            'cabin_class': insight.cabin_class,
+            'lowest_price': insight.lowest_price,
+            'price_level': insight.price_level,
+            'typical_price_range': [insight.typical_price_low, insight.typical_price_high] if insight.typical_price_low and insight.typical_price_high else [],
+            'price_history': history,
+            'search_date': insight.search_date.isoformat() if insight.search_date else None
+        })
+    
+    return jsonify(chart_data)
 
 @main_bp.route('/airlines')
 def get_airlines():

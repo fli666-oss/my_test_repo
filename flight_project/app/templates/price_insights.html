@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Insights Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .chart-container {
+            margin-top: 30px;
+            height: 400px;
+        }
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .info-item {
+            display: inline-block;
+            margin: 10px 20px 10px 0;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .info-value {
+            color: #007bff;
+            font-size: 18px;
+        }
+        .price-level {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .price-level-low { background: #28a745; color: white; }
+        .price-level-medium { background: #ffc107; color: #333; }
+        .price-level-high { background: #dc3545; color: white; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Flight Price Insights</h1>
+        
+        <div class="form-group">
+            <label>Origin:</label>
+            <input type="text" id="origin" value="CDG" placeholder="e.g., CDG">
+        </div>
+        <div class="form-group">
+            <label>Destination:</label>
+            <input type="text" id="destination" value="PEK" placeholder="e.g., PEK">
+        </div>
+        <div class="form-group">
+            <label>API Key:</label>
+            <input type="text" id="apiKey" placeholder="Your SerpAPI Key">
+        </div>
+        <div class="form-group">
+            <label>Outbound Date:</label>
+            <input type="date" id="outboundDate" value="2026-10-16">
+        </div>
+        <div class="form-group">
+            <label>Return Date:</label>
+            <input type="date" id="returnDate" value="2026-10-31">
+        </div>
+        <div class="form-group">
+            <label>Cabin Class:</label>
+            <select id="travelClass">
+                <option value="1">Economy</option>
+                <option value="2">Premium Economy</option>
+                <option value="3">Business</option>
+                <option value="4">First</option>
+            </select>
+        </div>
+        
+        <button onclick="searchFlights()">Search Flights</button>
+        <button onclick="loadChart()">Load Chart</button>
+        
+        <div id="error" class="error"></div>
+        
+        <div id="resultPanel" style="display:none;">
+            <h2>Price Insights</h2>
+            <div class="info-panel">
+                <div class="info-item">
+                    <div class="info-label">Lowest Price:</div>
+                    <div class="info-value" id="lowestPrice">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Price Level:</div>
+                    <span class="price-level" id="priceLevel">-</span>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Typical Price Range:</div>
+                    <div class="info-value" id="typicalPriceRange">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+        </div>
+        
+        <h2>Historical Data</h2>
+        <table id="historyTable">
+            <thead>
+                <tr>
+                    <th>Departure Date</th>
+                    <th>Return Date</th>
+                    <th>Cabin Class</th>
+                    <th>Lowest Price</th>
+                    <th>Price Level</th>
+                    <th>Typical Range</th>
+                    <th>Search Date</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    
+    <script>
+        let chart = null;
+        
+        async function searchFlights() {
+            const apiKey = document.getElementById('apiKey').value;
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            const outboundDate = document.getElementById('outboundDate').value;
+            const returnDate = document.getElementById('returnDate').value;
+            const travelClass = document.getElementById('travelClass').value;
+            
+            if (!apiKey) {
+                document.getElementById('error').textContent = 'Please enter API Key';
+                return;
+            }
+            
+            document.getElementById('error').textContent = '';
+            
+            try {
+                const response = await fetch('/search-price-insights', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        api_key: apiKey,
+                        departure_id: origin,
+                        arrival_id: destination,
+                        outbound_date: outboundDate,
+                        return_date: returnDate,
+                        travel_class: travelClass,
+                        type: '1',
+                        adults: '1',
+                        sort_by: '1'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    document.getElementById('error').textContent = data.error;
+                    return;
+                }
+                
+                const priceInsights = data.price_insights;
+                if (priceInsights) {
+                    document.getElementById('resultPanel').style.display = 'block';
+                    document.getElementById('lowestPrice').textContent = priceInsights.lowest_price || '-';
+                    
+                    const priceLevel = priceInsights.price_level || '-';
+                    const priceLevelEl = document.getElementById('priceLevel');
+                    priceLevelEl.textContent = priceLevel;
+                    priceLevelEl.className = 'price-level price-level-' + priceLevel;
+                    
+                    const typicalRange = priceInsights.typical_price_range;
+                    if (typicalRange && typicalRange.length === 2) {
+                        document.getElementById('typicalPriceRange').textContent = 
+                            typicalRange[0] + ' - ' + typicalRange[1];
+                    } else {
+                        document.getElementById('typicalPriceRange').textContent = '-';
+                    }
+                    
+                    if (priceInsights.price_history) {
+                        renderChart(priceInsights.price_history, priceInsights.lowest_price, typicalRange);
+                    }
+                }
+                
+                loadChart();
+                
+            } catch (error) {
+                document.getElementById('error').textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        async function loadChart() {
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            
+            try {
+                const response = await fetch(`/price-insights-chart?origin=${origin}&destination=${destination}`);
+                const data = await response.json();
+                
+                if (data.length === 0) {
+                    document.getElementById('error').textContent = 'No historical data found';
+                    return;
+                }
+                
+                const tbody = document.querySelector('#historyTable tbody');
+                tbody.innerHTML = '';
+                
+                data.forEach(item => {
+                    const row = tbody.insertRow();
+                    row.insertCell().textContent = item.departure_date || '-';
+                    row.insertCell().textContent = item.return_date || '-';
+                    row.insertCell().textContent = item.cabin_class || '-';
+                    row.insertCell().textContent = item.lowest_price || '-';
+                    
+                    const levelCell = row.insertCell();
+                    levelCell.textContent = item.price_level || '-';
+                    levelCell.className = 'price-level-' + item.price_level;
+                    
+                    row.insertCell().textContent = item.typical_price_range ? 
+                        item.typical_price_range.join(' - ') : '-';
+                    row.insertCell().textContent = item.search_date ? 
+                        new Date(item.search_date).toLocaleDateString() : '-';
+                });
+                
+            } catch (error) {
+                console.error('Error loading chart:', error);
+            }
+        }
+        
+        function renderChart(priceHistory, lowestPrice, typicalRange) {
+            const labels = priceHistory.map(item => {
+                const date = new Date(item[0] * 1000);
+                return date.toLocaleDateString();
+            });
+            
+            const prices = priceHistory.map(item => item[1]);
+            const colors = prices.map(price => price === lowestPrice ? 'red' : 'blue');
+            
+            const datasets = [{
+                label: 'Price (EUR)',
+                data: prices,
+                backgroundColor: colors.map(c => c === 'red' ? 'rgba(255, 99, 132, 0.8)' : 'rgba(54, 162, 235, 0.6)'),
+                borderColor: colors.map(c => c === 'red' ? 'red' : 'blue'),
+                borderWidth: 2,
+                pointRadius: prices.map(price => price === lowestPrice ? 8 : 3),
+                pointHoverRadius: 10
+            }];
+            
+            if (typicalRange && typicalRange.length === 2) {
+                datasets.push({
+                    label: 'Typical Price Range',
+                    data: Array(prices.length).fill(typicalRange[1]),
+                    borderColor: 'rgba(75, 192, 192, 0.5)',
+                    borderDash: [5, 5],
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    fill: false
+                });
+                datasets.push({
+                    label: 'Typical Price Low',
+                    data: Array(prices.length).fill(typicalRange[0]),
+                    borderColor: 'rgba(75, 192, 192, 0.5)',
+                    borderDash: [5, 5],
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    fill: '-1'
+                });
+            }
+            
+            if (chart) {
+                chart.destroy();
+            }
+            
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Price (EUR)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + ' EUR';
+                                    }
+                                    if (context.parsed.y === lowestPrice) {
+                                        label += ' (Lowest Price!)';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        loadChart();
+    </script>
+</body>
+</html>
