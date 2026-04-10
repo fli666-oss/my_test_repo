@@ -215,6 +215,119 @@ def search_flights():
         'data_source': 'serpapi'
     })
 
+@main_bp.route('/search-serpapi', methods=['POST'])
+def search_serpapi_direct():
+    """
+    Search flights using SerpAPI with direct parameters
+    ---
+    tags:
+      - Flights
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          required:
+            - api_key
+            - departure_id
+            - arrival_id
+            - outbound_date
+          properties:
+            api_key:
+              type: string
+              example: "your_api_key"
+            engine:
+              type: string
+              default: "google_flights"
+            departure_id:
+              type: string
+              example: "PEK"
+            arrival_id:
+              type: string
+              example: "CDG"
+            outbound_date:
+              type: string
+              example: "2026-04-24"
+            return_date:
+              type: string
+              example: "2026-04-30"
+            travel_class:
+              type: string
+              default: "1"
+            type:
+              type: string
+              default: "1"
+            adults:
+              type: string
+              default: "1"
+            sort_by:
+              type: string
+              default: "1"
+            departure_token:
+              type: string
+            output:
+              type: string
+              description: "Output file path (optional)"
+    responses:
+      200:
+        description: Raw SerpAPI response
+      400:
+        description: Missing required parameters
+      500:
+        description: API error
+    """
+    from serpapi import Client
+    
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({'error': 'No JSON data provided'}), 400
+    
+    api_key = data.get('api_key')
+    if not api_key:
+        return jsonify({'error': 'api_key is required'}), 400
+    
+    departure_id = data.get('departure_id')
+    arrival_id = data.get('arrival_id')
+    outbound_date = data.get('outbound_date')
+    
+    if not departure_id or not arrival_id or not outbound_date:
+        return jsonify({'error': 'departure_id, arrival_id, and outbound_date are required'}), 400
+    
+    params = {
+        "engine": data.get('engine', 'google_flights'),
+        "departure_id": departure_id,
+        "arrival_id": arrival_id,
+        "outbound_date": outbound_date,
+    }
+    
+    optional_fields = ['return_date', 'travel_class', 'type', 'adults', 'sort_by', 'departure_token', 'currency', 'duration']
+    for field in optional_fields:
+        if data.get(field):
+            params[field] = data[field]
+    
+    logger.info(f"Direct SerpAPI request: {json.dumps(params, ensure_ascii=False)}")
+    
+    try:
+        client = Client(api_key=api_key)
+        results = client.search(params)
+        results_dict = dict(results)
+        
+        logger.info(f"Response keys: {list(results_dict.keys())}")
+        
+        output_file = data.get('output')
+        if output_file:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(results_dict, f, ensure_ascii=False, indent=2)
+            logger.info(f"Results saved to: {output_file}")
+        
+        return jsonify(results_dict)
+    
+    except Exception as e:
+        logger.error(f"SerpAPI error: {e}")
+        return jsonify({'error': str(e)}), 500
+
 @main_bp.route('/price-history')
 def price_history():
     from app.models.models import db, FlightPrice
