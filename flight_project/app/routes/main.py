@@ -141,8 +141,7 @@ def search_flights():
             'travel_class': travel_class,
             'adults': adults,
             'sort_by': sort_by,
-            'stops': stops,
-            'max_duration': max_duration
+            'stops': stops
         },
         'data_source': 'serpapi'
     })
@@ -215,11 +214,11 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
         sort_by_map = {
             'best': "1",
             'price': "2",
-            'duration': "3"
+            'duration': "5"
         }
         
         stops_map = {
-            'any': None,
+            'any': "0",
             'direct': "1",
             '1_stop': "2",
             '2_stops': "3"
