@@ -303,21 +303,25 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             if trip_type == 'round_trip' and return_date and departure_token:
                 return_params = {
                     "engine": "google_flights",
-                    "departure_id": destination,
-                    "arrival_id": origin,
+                    "departure_id": origin,
+                    "arrival_id": destination,
                     "currency": "EUR",
-                    "type": "1",
-                    "outbound_date": return_date,
+                    "type": trip_type_map.get(trip_type, "1"),
+                    "outbound_date": outbound_date,
+                    "return_date": return_date,
                     "travel_class": travel_class_map.get(travel_class, "1"),
-                    "adults": str(adults),
-                    "departure_token": departure_token
+                    "adults": adults,
+                    "departure_token": departure_token,
                 }
-                
+                client = Client(api_key=SERPAPI_API_KEY)
                 logger.info(f"Fetching return flights with token...")
-                
+                logger.info(f"2nd search params : {return_params}")
                 try:
                     return_results = client.search(return_params)
-                    return_flights = return_results.get('best_flights', [])
+                    results_dict = dict(return_results)
+                    logger.info(f"Response keys: {list(results_dict.keys())}")
+                    logger.info(f"return_results : {results_dict}")
+                    return_flights = results_dict.get('other_flights', [])
                     
                     if return_flights and len(return_flights) > 0:
                         ret_flight = return_flights[0]
