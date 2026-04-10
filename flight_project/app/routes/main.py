@@ -321,7 +321,7 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
                     results_dict = dict(return_results)
                     logger.info(f"Response keys: {list(results_dict.keys())}")
                     logger.info(f"return_results : {results_dict}")
-                    return_flights = results_dict.get('best_flights', [])
+                    return_flights = results_dict.get('best_flights', []) + results_dict.get('other_flights', [])
                     
                     if return_flights and len(return_flights) > 0:
                         ret_flight = return_flights[0]
