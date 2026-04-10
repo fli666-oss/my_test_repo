@@ -102,7 +102,6 @@ def create_api_spec():
                                         "adults": {"type": "string", "default": "1"},
                                         "sort_by": {"type": "string", "default": "1"},
                                         "departure_token": {"type": "string"},
-                                        "output": {"type": "string", "description": "Output file path (optional)"}
                                     }
                                 }
                             }

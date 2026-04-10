@@ -433,7 +433,7 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
         logger.info(f"Outbound response keys: {list(outbound_results.keys())}")
         
         outbound_flights = []
-        best_flights = outbound_results.get('best_flights', [])
+        return_flights = outbound_results.get('best_flights', []) + outbound_results.get('other_flights', [])
         
         for i, flight in enumerate(best_flights):
             flight_details = flight.get('flights', [])
