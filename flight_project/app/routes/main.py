@@ -163,29 +163,29 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
     
     try:
         travel_class_map = {
-            1: 'ECONOMY',
-            2: 'PREMIUM_ECONOMY',
-            3: 'BUSINESS',
-            4: 'FIRST'
+            1: "1",
+            2: "2",
+            3: "3",
+            4: "4"
         }
         
         trip_type_map = {
-            1: 'ROUND_TRIP',
-            2: 'ONE_WAY',
-            3: 'MULTI_CITY'
+            1: 1,
+            2: 2,
+            3: 3
         }
         
         sort_by_map = {
-            1: 'BEST',
-            2: 'PRICE',
-            3: 'DURATION'
+            1: "1",
+            2: "2",
+            3: "3"
         }
         
         stops_map = {
             0: None,
-            1: 0,
-            2: 1,
-            3: 2
+            1: 1,
+            2: 2,
+            3: 3
         }
         
         params = {
@@ -193,21 +193,19 @@ def search_flights_serpapi(origin, destination, outbound_date, return_date, cabi
             "departure_id": origin,
             "arrival_id": destination,
             "currency": "EUR",
-            "type": str(trip_type),
+            "type": trip_type_map.get(trip_type, 1),
             "outbound_date": outbound_date,
-            "travel_class": travel_class_map.get(travel_class, 'ECONOMY'),
-            "adults": adults,
-            "sort_by": sort_by_map.get(sort_by, 'BEST')
+            "travel_class": travel_class_map.get(travel_class, "1"),
+            "adults": str(adults),
+            "sort_by": sort_by_map.get(sort_by, "1"),
+            "duration": "1500"
         }
         
         if trip_type == 1 and return_date:
             params["return_date"] = return_date
         
-        if stops_map.get(stops) is not None:
-            params["max_stops"] = stops_map[stops]
-        
-        if max_duration:
-            params["duration"] = max_duration
+        if stops != 0:
+            params["max_stops"] = str(stops_map.get(stops, 1))
         
         client = Client(api_key=SERPAPI_API_KEY)
         results = client.search(params)
