@@ -1,4 +1,5 @@
 {
+    "api_key": "YOUR_API_KEY_HERE",
     "origin": "PEK",
     "destination": "CDG",
     "departure_date": "2026-05-01",
@@ -7,5 +8,6 @@
     "trip_type": "1",
     "adults": 1,
     "sort_by": "1",
-    "stops": null
+    "stops": null,
+    "output": "flights_result.json"
 }

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-import os
 import sys
 from serpapi import Client
 
@@ -15,18 +14,16 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-SERPAPI_API_KEY = os.environ.get('SERPAPI_API_KEY', '')
-
 def load_params_from_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def search_flights(origin, destination, departure_date, return_date=None, 
+def search_flights(api_key, origin, destination, departure_date, return_date=None, 
                    travel_class='1', trip_type='1', adults=1, 
                    sort_by='1', stops=None):
     
-    if not SERPAPI_API_KEY:
-        logger.error("SERPAPI_API_KEY not set")
+    if not api_key:
+        logger.error("API key not provided")
         return None
     
     params = {
@@ -52,7 +49,7 @@ def search_flights(origin, destination, departure_date, return_date=None,
     logger.info(f"Request params: {json.dumps(params)}")
     
     try:
-        client = Client(api_key=SERPAPI_API_KEY)
+        client = Client(api_key=api_key)
         results = client.search(params)
         
         logger.info(f"Response keys: {list(results.keys())}")
@@ -69,12 +66,13 @@ def main():
     
     params_file = sys.argv[1]
     
-    if not SERPAPI_API_KEY:
-        print("Error: SERPAPI_API_KEY environment variable not set")
-        sys.exit(1)
-    
     logger.info(f"Loading parameters from: {params_file}")
     params = load_params_from_file(params_file)
+    
+    api_key = params.get('api_key')
+    if not api_key:
+        print("Error: api_key is required in params file")
+        sys.exit(1)
     
     if not params.get('departure_date'):
         print("Error: departure_date is required")
@@ -83,6 +81,7 @@ def main():
     logger.info(f"Search parameters: {json.dumps(params, ensure_ascii=False)}")
     
     results = search_flights(
+        api_key=api_key,
         origin=params.get('origin', 'PEK'),
         destination=params.get('destination', 'CDG'),
         departure_date=params['departure_date'],
