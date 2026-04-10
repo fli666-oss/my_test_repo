@@ -52,30 +52,44 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (data.flights && data.flights.length > 0) {
-                resultsList.innerHTML = data.flights.map(flight => `
+                resultsList.innerHTML = data.flights.map(flight => {
+                    const airlineCode = (flight.flight_number || '').split(' ')[0].substring(0, 2);
+                    const airlineLogo = `https://www.gstatic.com/flights/airline_logos/70px/${airlineCode}.png`;
+                    return `
                     <div class="flight-card">
                         <div class="flight-info">
                             <div class="flight-route">
-                                <span class="flight-number">${flight.flight_number}</span>
-                                <span>${flight.airline_zh || flight.airline}</span>
+                                <img src="${airlineLogo}" alt="${flight.airline}" class="airline-logo" onerror="this.style.display='none'">
+                                <div class="flight-route-info">
+                                    <span class="flight-number">${flight.flight_number}</span>
+                                    <span>${flight.airline_zh || flight.airline}</span>
+                                    <span class="flight-type">${flight.type || ''}</span>
+                                </div>
                             </div>
                             <div class="stops-info">
-                                ${flight.stops === 0 ? '直飞' : flight.stops + '次中转: ' + (flight.stops_airports || []).join(', ')}
+                                ${flight.stops === 0 ? '✈️ 直飞' : `🔄 ${flight.stops}次中转: ${(flight.stops_airports || []).join(', ')}`}
                             </div>
                             <div class="flight-details">
-                                <span>🕐 ${flight.departure_time} → ${flight.arrival_time}</span>
+                                <span>🛫 ${flight.departure_time}</span>
+                                <span>🛬 ${flight.arrival_time}</span>
                                 <span>⏱ ${flight.duration}小时</span>
-                                <span>✈️ ${flight.aircraft}</span>
+                                <span>✈️ ${flight.aircraft || 'N/A'}</span>
                             </div>
+                            ${flight.carbon_emissions ? `
+                            <div class="carbon-info">
+                                <span>🌍 碳排放: ${flight.carbon_emissions.this_flight || 0}g</span>
+                                <span>(典型: ${flight.carbon_emissions.typical_for_this_route || 0}g)</span>
+                            </div>
+                            ` : ''}
                         </div>
                         <div class="flight-price">
                             <div class="price-amount">
                                 <span class="currency">€</span>${flight.price}
                             </div>
-                            <div class="seats-info">剩余 ${flight.seats_available} 座</div>
+                            <div class="seats-info">💺 剩余 ${flight.seats_available} 座</div>
                         </div>
                     </div>
-                `).join('');
+                `}).join('');
                 
                 loadPriceChart(searchData.departure_date);
             } else {

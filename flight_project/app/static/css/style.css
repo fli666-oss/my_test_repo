@@ -117,6 +117,24 @@ header h1 {
     margin-bottom: 10px;
 }
 
+.airline-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.flight-route-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.flight-type {
+    font-size: 0.75em;
+    color: #667eea;
+    font-weight: 500;
+}
+
 .flight-number {
     font-weight: 600;
     color: #333;
