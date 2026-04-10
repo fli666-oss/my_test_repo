@@ -22,14 +22,20 @@ def create_app():
                 "model_filter": lambda tag: True,
             }
         ],
-        "static_url_path": "/flasgger_static",
-        "static_folder": "static",
-        "title": "Flight Search API",
-        "version": "1.0",
-        "description": "API for searching flights using SerpAPI",
+        "swagger_ui": True,
+        "specs_route": "/apidocs/"
     }
     
-    swagger = Swagger(app, config=swagger_config)
+    swagger_template = {
+        "info": {
+            "title": "Flight Search API",
+            "version": "1.0",
+            "description": "API for searching flights using SerpAPI"
+        },
+        "basePath": "/"
+    }
+    
+    swagger = Swagger(app, config=swagger_config, template=swagger_template)
     
     from app.models.models import db, init_db
     init_db(app)
