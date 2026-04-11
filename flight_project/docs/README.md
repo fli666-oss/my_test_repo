@@ -39,6 +39,54 @@ python run.py
 
 ---
 
+### 方式三：开机自启动（任务计划程序）
+
+服务安装后，开机自动启动，无需手动操作。
+
+#### 安装开机启动任务
+
+以**管理员身份**运行 PowerShell 或 CMD：
+
+```powershell
+cd C:\Users\fengl\Repositories\my_test_repo\flight_project
+.\install_service.bat
+```
+
+#### 管理命令
+
+```powershell
+# 查看任务状态
+schtasks /query /tn "FlightSearchServer"
+
+# 手动启动任务
+schtasks /run /tn "FlightSearchServer"
+
+# 停止任务（需手动结束 Python 进程）
+taskkill /F /IM python.exe
+
+# 删除开机启动任务
+schtasks /delete /tn "FlightSearchServer" /f
+```
+
+#### 查看服务日志
+
+任务运行日志保存在：
+- `C:\Users\fengl\Repositories\my_test_repo\flight_project\output.log`
+- `C:\Users\fengl\Repositories\my_test_repo\flight_project\error.log`
+
+#### 环境变量说明
+
+`runner.bat` 已内置 SerpAPI 配置：
+
+```
+SERPAPI_API_KEY=3a9aaedb965e62e9bbc50abf516f4bfbf1b84f3c3eb41db3b7b1062336f28d28
+USE_SERPAPI=true
+```
+
+如需修改，请编辑 `runner.bat`。
+
+---
+
 ### SQLite 数据库
 
 数据库文件 `flights.db` 会在首次运行时自动创建。

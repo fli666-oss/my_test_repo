@@ -1,7 +1,6 @@
 @echo off
 cd /d "%~dp0"
 
-set SERPAPI_API_KEY=3a9aaedb965e62e9bbc50abf516f4bfbf1b84f3c3eb41db3b7b1062336f28d28
 set USE_SERPAPI=true
 
 echo Checking dependencies...

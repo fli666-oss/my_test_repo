@@ -1,0 +1,35 @@
+2026-04-11 21:11:46,841 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.26:5000
+2026-04-11 21:11:46,842 - INFO - [33mPress CTRL+C to quit[0m
+2026-04-11 21:14:47,517 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.26:5000
+2026-04-11 21:14:47,518 - INFO - [33mPress CTRL+C to quit[0m
+2026-04-11 21:14:54,049 - INFO - 127.0.0.1 - - [11/Apr/2026 21:14:54] "GET / HTTP/1.1" 200 -
+2026-04-11 21:14:54,337 - INFO - 127.0.0.1 - - [11/Apr/2026 21:14:54] "GET /static/css/style.css HTTP/1.1" 200 -
+2026-04-11 21:14:54,417 - INFO - 127.0.0.1 - - [11/Apr/2026 21:14:54] "GET /static/js/main.js HTTP/1.1" 200 -
+2026-04-11 21:14:54,439 - INFO - 127.0.0.1 - - [11/Apr/2026 21:14:54] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-04-11 21:15:08,898 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:08] "GET /price-insights HTTP/1.1" 200 -
+2026-04-11 21:15:09,107 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:09] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:17,015 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:17] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:20,878 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:20] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:22,250 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:22] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:22,764 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:22] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:24,238 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:24] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:24,713 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:24] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:24,964 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:24] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:25,452 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:25] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:25,961 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:25] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:26,212 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:26] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:26,278 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:26] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:34,631 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:34] "GET /price-insights-chart HTTP/1.1" 200 -
+2026-04-11 21:15:37,410 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:37] "GET /price-insights-chart HTTP/1.1" 200 -
+2026-04-11 21:15:40,630 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:40] "GET /price-insights HTTP/1.1" 200 -
+2026-04-11 21:15:40,977 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:40] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:44,203 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:44] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:45,795 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:45] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:46,052 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:46] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 21:15:46,107 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:46] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
