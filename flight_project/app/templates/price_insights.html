@@ -52,54 +52,6 @@
             margin-top: 30px;
             height: 400px;
         }
-        .info-panel {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 4px;
-        }
-        .info-item {
-            display: inline-block;
-            margin: 10px 20px 10px 0;
-        }
-        .info-label {
-            font-weight: bold;
-            color: #555;
-            font-size: 14px;
-        }
-        .info-value {
-            color: #007bff;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .typical-range {
-            background: linear-gradient(90deg, #ff6b6b, #ffa500) !important;
-            -webkit-background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-            font-weight: bold !important;
-            font-size: 20px !important;
-            padding: 4px 8px;
-            border: 2px solid #ff6b6b;
-            border-radius: 4px;
-        }
-        .typical-low {
-            color: #28a745 !important;
-            font-weight: bold !important;
-            font-size: 18px !important;
-            padding: 4px 8px;
-            border: 2px solid #28a745;
-            border-radius: 4px;
-        }
-        .price-level {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .price-level-low { background: #28a745; color: white; }
-        .price-level-medium { background: #ffc107; color: #333; }
-        .price-level-high { background: #dc3545; color: white; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -162,25 +114,7 @@
         
         <div id="error" class="error"></div>
         
-        <div id="resultPanel" style="display:none;">
-            <h2>Price Insights</h2>
-            <div class="info-panel">
-                <div class="info-item">
-                    <div class="info-label">Lowest Price:</div>
-                    <div class="info-value" id="lowestPrice">-</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Price Level:</div>
-                    <span class="price-level" id="priceLevel">-</span>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Typical Price Range:</div>
-                    <div class="info-value" id="typicalPriceRange">-</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="chart-container">
+        <div class="chart-container" id="chartContainer" style="display:none;">
             <canvas id="priceChart"></canvas>
         </div>
         
@@ -246,29 +180,6 @@
                     return;
                 }
                 
-                const priceInsights = data.price_insights;
-                if (priceInsights) {
-                    document.getElementById('resultPanel').style.display = 'block';
-                    document.getElementById('lowestPrice').textContent = priceInsights.lowest_price || '-';
-                    
-                    const priceLevel = priceInsights.price_level || '-';
-                    const priceLevelEl = document.getElementById('priceLevel');
-                    priceLevelEl.textContent = priceLevel;
-                    priceLevelEl.className = 'price-level price-level-' + priceLevel;
-                    
-                    const typicalRange = priceInsights.typical_price_range;
-                    if (typicalRange && typicalRange.length === 2) {
-                        const rangeEl = document.getElementById('typicalPriceRange');
-                        rangeEl.innerHTML = `<span class="typical-low">${typicalRange[0]}</span> - <span class="typical-range">${typicalRange[1]}</span>`;
-                    } else {
-                        document.getElementById('typicalPriceRange').textContent = '-';
-                    }
-                    
-                    if (priceInsights.price_history) {
-                        renderChart(priceInsights.price_history, priceInsights.lowest_price, typicalRange);
-                    }
-                }
-                
                 loadChart();
                 
             } catch (error) {
@@ -280,10 +191,6 @@
             const origin = document.getElementById('origin').value;
             const destination = document.getElementById('destination').value;
             const apiKey = document.getElementById('apiKey').value;
-            
-            const outboundDate = document.getElementById('outboundDate').value;
-            const returnDate = document.getElementById('returnDate').value;
-            const travelClass = document.getElementById('travelClass').value;
             
             const tbody = document.querySelector('#historyTable tbody');
             tbody.innerHTML = '';
@@ -301,6 +208,8 @@
                 }
                 
                 document.getElementById('error').textContent = '';
+                
+                let allHistory = [];
                 
                 data.forEach(item => {
                     const row = tbody.insertRow();
@@ -342,122 +251,77 @@
                     
                     row.insertCell().textContent = item.search_date ? 
                         new Date(item.search_date).toLocaleDateString() : '-';
+                    
+                    if (item.price_history && item.price_history.length > 0) {
+                        item.price_history.forEach(p => {
+                            allHistory.push({
+                                date: new Date(p[0] * 1000),
+                                price: p[1],
+                                typicalRange: item.typical_price_range
+                            });
+                        });
+                    }
                 });
                 
-                if (data.length > 0) {
-                    const latestData = data[0];
-                    if (latestData.price_history && latestData.price_history.length > 0) {
-                        renderChart(
-                            latestData.price_history, 
-                            latestData.lowest_price, 
-                            latestData.typical_price_range
-                        );
+                if (allHistory.length > 0) {
+                    allHistory.sort((a, b) => a.date - b.date);
+                    
+                    const chartContainer = document.getElementById('chartContainer');
+                    chartContainer.style.display = 'block';
+                    
+                    const ctx = document.getElementById('priceChart').getContext('2d');
+                    
+                    if (chart) {
+                        chart.destroy();
                     }
+                    
+                    const typicalRange = data[0].typical_price_range;
+                    
+                    const datasets = [{
+                        label: 'Price (EUR)',
+                        data: allHistory.map(h => h.price),
+                        borderColor: '#FFD700',
+                        backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        hidden: true
+                    }];
+                    
+                    if (typicalRange && typicalRange.length === 2) {
+                        datasets.push({
+                            label: 'Typical Price',
+                            data: Array(allHistory.length).fill(typicalRange[1]),
+                            borderColor: '#ff6600',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            fill: false
+                        });
+                    }
+                    
+                    chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: allHistory.map(h => h.date.toLocaleDateString()),
+                            datasets: datasets
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: true }
+                            },
+                            scales: {
+                                y: { beginAtZero: false }
+                            }
+                        }
+                    });
                 }
-                
             } catch (error) {
                 console.error('Error loading chart:', error);
-                document.getElementById('error').textContent = 'Error loading data: ' + error.message;
             }
         }
-        
-        function renderChart(priceHistory, lowestPrice, typicalRange) {
-            const labels = priceHistory.map(item => {
-                const date = new Date(item[0] * 1000);
-                return date.toLocaleDateString();
-            });
-            
-            const prices = priceHistory.map(item => item[1]);
-            const colors = prices.map(price => price === lowestPrice ? 'red' : 'blue');
-            
-            const datasets = [{
-                label: 'Price (EUR)',
-                data: prices,
-                backgroundColor: colors.map(c => c === 'red' ? 'rgba(255, 99, 132, 0.8)' : 'rgba(54, 162, 235, 0.6)'),
-                borderColor: colors.map(c => c === 'red' ? 'red' : 'blue'),
-                borderWidth: 2,
-                pointRadius: prices.map(price => price === lowestPrice ? 8 : 3),
-                pointHoverRadius: 10
-            }];
-            
-            if (typicalRange && typicalRange.length === 2) {
-                datasets.push({
-                    label: 'Typical Price Range',
-                    data: Array(prices.length).fill(typicalRange[1]),
-                    borderColor: 'rgba(75, 192, 192, 0.5)',
-                    borderDash: [5, 5],
-                    borderWidth: 1,
-                    pointRadius: 0,
-                    fill: false
-                });
-                datasets.push({
-                    label: 'Typical Price Low',
-                    data: Array(prices.length).fill(typicalRange[0]),
-                    borderColor: 'rgba(75, 192, 192, 0.5)',
-                    borderDash: [5, 5],
-                    borderWidth: 1,
-                    pointRadius: 0,
-                    fill: '-1'
-                });
-            }
-            
-            if (chart) {
-                chart.destroy();
-            }
-            
-            const ctx = document.getElementById('priceChart').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'Price (EUR)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.y !== null) {
-                                        label += context.parsed.y + ' EUR';
-                                    }
-                                    if (context.parsed.y === lowestPrice) {
-                                        label += ' (Lowest Price!)';
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        loadChart();
     </script>
 </body>
 </html>
