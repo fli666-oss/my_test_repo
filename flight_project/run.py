@@ -5,11 +5,16 @@ from flask_swagger_ui import get_swaggerui_blueprint
 
 def create_app():
     base_dir = os.path.dirname(os.path.abspath(__file__))
+    instance_dir = os.path.join(base_dir, 'instance')
+    
+    if not os.path.exists(instance_dir):
+        os.makedirs(instance_dir)
+    
     app = Flask(__name__,
                 template_folder=os.path.join(base_dir, 'app', 'templates'),
                 static_folder=os.path.join(base_dir, 'app', 'static'))
     app.config['SECRET_KEY'] = 'dev-key-change-in-production'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flights.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(instance_dir, "flights.db")}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
@@ -21,13 +26,15 @@ def create_app():
     )
     app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix="/apidocs")
     
-    from app.models.models import db, init_db
-    init_db(app)
+    from app.models.models import db
+    db.init_app(app)
     
     with app.app_context():
-        from app.routes.main import main_bp, init_db as setup_db
+        db.create_all()
+    
+    with app.app_context():
+        from app.routes.main import main_bp
         app.register_blueprint(main_bp)
-        setup_db()
     
     return app
 
