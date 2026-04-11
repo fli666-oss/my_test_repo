@@ -161,6 +161,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.priceChartInstance.destroy();
             }
             
+            if (!priceData || priceData.length === 0) {
+                chartSection.innerHTML = '<div class="error-message">No historical data found</div>';
+                return;
+            }
+            
+            const prices = priceData.map(d => d.price);
+            const avgPrice = prices.reduce((a, b) => a + b, 0) / prices.length;
+            
+            const pointColors = priceData.map(d => {
+                if (d.price < avgPrice * 0.9) return '#28a745';
+                if (d.price > avgPrice * 1.1) return '#dc3545';
+                return '#667eea';
+            });
+            
+            const pointRadius = priceData.map(d => {
+                if (d.price < avgPrice * 0.9 || d.price > avgPrice * 1.1) return 8;
+                return 4;
+            });
+            
             window.priceChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -171,14 +190,35 @@ document.addEventListener('DOMContentLoaded', function() {
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.1)',
                         fill: true,
-                        tension: 0.4
+                        tension: 0.4,
+                        pointBackgroundColor: pointColors,
+                        pointBorderColor: pointColors,
+                        pointRadius: pointRadius
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: true }
+                        legend: { display: true },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const d = priceData[context.dataIndex];
+                                    let label = `票价: ${d.price} CNY`;
+                                    if (d.min_price && d.max_price) {
+                                        label += ` (最低: ${d.min_price}, 最高: ${d.max_price})`;
+                                    }
+                                    if (d.price < avgPrice * 0.9) label += ' - 低价';
+                                    if (d.price > avgPrice * 1.1) label += ' - 高价';
+                                    return label;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: ['■ 绿色: 低价 (低于均价10%)', '■ 红色: 高价 (高于均价10%)', '■ 蓝色: 正常价格']
+                        }
                     },
                     scales: {
                         y: { beginAtZero: false }

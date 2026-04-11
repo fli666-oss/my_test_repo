@@ -5,7 +5,6 @@ echo ========================================
 echo.
 
 set "serviceName=FlightSearchServer"
-set "projectPath=C:\Users\fengl\Repositories\my_test_repo\flight_project"
 
 echo Uninstalling existing service if any...
 sc delete FlightSearchServer >nul 2>&1
@@ -14,7 +13,7 @@ echo Creating startup task...
 schtasks /delete /tn "%serviceName%" /f >nul 2>&1
 
 echo Creating startup task...
-schtasks /create /tn "%serviceName%" /tr "\"%projectPath%\runner.bat\"" /sc onstart /rl limited /f
+schtasks /create /tn "%serviceName%" /tr "\"%~dp0runner.bat\"" /sc onstart /rl limited /f
 
 echo.
 echo Starting task...

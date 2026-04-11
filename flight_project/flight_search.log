@@ -33,3 +33,19 @@
 2026-04-11 21:15:45,795 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:45] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
 2026-04-11 21:15:46,052 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:46] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
 2026-04-11 21:15:46,107 - INFO - 127.0.0.1 - - [11/Apr/2026 21:15:46] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 22:13:10,532 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.26:5000
+2026-04-11 22:13:10,532 - INFO - [33mPress CTRL+C to quit[0m
+2026-04-11 22:13:32,295 - INFO - 127.0.0.1 - - [11/Apr/2026 22:13:32] "GET / HTTP/1.1" 200 -
+2026-04-11 22:13:32,597 - INFO - 127.0.0.1 - - [11/Apr/2026 22:13:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-11 22:13:32,649 - INFO - 127.0.0.1 - - [11/Apr/2026 22:13:32] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2026-04-11 22:13:43,018 - INFO - 127.0.0.1 - - [11/Apr/2026 22:13:43] "GET /price-insights HTTP/1.1" 200 -
+2026-04-11 22:13:43,299 - INFO - 127.0.0.1 - - [11/Apr/2026 22:13:43] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 22:13:57,273 - INFO - Price insights request: {"engine": "google_flights", "departure_id": "CDG", "arrival_id": "PEK", "outbound_date": "2026-10-16", "currency": "EUR", "duration": "1500", "stops": 0, "return_date": "2026-10-31", "travel_class": "1", "type": "1", "adults": "1", "sort_by": "1"}
+2026-04-11 22:14:00,236 - INFO - Response keys: ['search_metadata', 'search_parameters', 'best_flights', 'other_flights', 'price_insights', 'airports']
+2026-04-11 22:14:00,248 - INFO - Price insights saved to database: CDG -> PEK
+2026-04-11 22:14:00,251 - INFO - 127.0.0.1 - - [11/Apr/2026 22:14:00] "POST /search-price-insights HTTP/1.1" 200 -
+2026-04-11 22:14:00,626 - INFO - 127.0.0.1 - - [11/Apr/2026 22:14:00] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
+2026-04-11 22:14:10,600 - INFO - 127.0.0.1 - - [11/Apr/2026 22:14:10] "GET /price-insights-chart?origin=CDG&destination=PEK HTTP/1.1" 200 -
