@@ -280,23 +280,32 @@
                     const datasets = [{
                         label: 'Price (EUR)',
                         data: allHistory.map(h => h.price),
-                        borderColor: '#FFD700',
-                        backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
                         fill: true,
                         tension: 0.4,
                         pointRadius: 5,
-                        pointHoverRadius: 8,
-                        hidden: true
+                        pointHoverRadius: 8
                     }];
                     
                     if (typicalRange && typicalRange.length === 2) {
                         datasets.push({
-                            label: 'Typical Price',
+                            label: 'Typical Price High',
                             data: Array(allHistory.length).fill(typicalRange[1]),
-                            borderColor: '#ff6600',
+                            borderColor: '#dc3545',
                             borderWidth: 3,
                             pointRadius: 0,
-                            fill: false
+                            fill: false,
+                            hidden: false
+                        });
+                        datasets.push({
+                            label: 'Typical Price Low',
+                            data: Array(allHistory.length).fill(typicalRange[0]),
+                            borderColor: '#28a745',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            fill: false,
+                            hidden: false
                         });
                     }
                     
